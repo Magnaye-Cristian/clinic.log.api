@@ -8,7 +8,13 @@ logsRouter.post('/', function (req, res) {
 logsRouter.get('/', function (req, res) {
     res.send('logsget');
 });
-logsRouter.delete('/:id', function (req, res) {
+logsRouter.get('/notimeout', function (req, res) {
+    res.send('');
+});
+logsRouter.post('/timeoutLog', function (req, res) {
+    res.send('');
+});
+logsRouter.get('/', function (req, res) {
     res.send('');
 });
 logsRouter.put('/', function (req, res) {

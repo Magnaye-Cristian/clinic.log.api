@@ -9,11 +9,16 @@ logsRouter.post('/', (req, res) => {
 logsRouter.get('/', (req, res) => {
     res.send('logsget')
 })
-logsRouter.delete('/:id', (req, res) => {
+logsRouter.get('/notimeout', (req, res) => {
+    res.send('')
+})
+logsRouter.post('/timeoutLog', (req, res) => {
     res.send('')
 
 })
-
+logsRouter.get('/', (req, res) => {
+    res.send('')
+})
 logsRouter.put('/', (req, res) => {
 
 })
