@@ -4,11 +4,15 @@ import { ValidationSchemas } from "../validation_schemas/validation_schemas";
 
 const profileRouter = Router();
 
-profileRouter.post('/register', async (req, res) => {
-    console.log(req.body);
-    const result = await ValidationSchemas.accountCreation.validateAsync(req.body);
-    console.log(result);
-    res.send(`profile1`)
+profileRouter.post('/register', (req, res) => {
+    const { error, value } = ValidationSchemas.accountCreation.validate(req.body);
+    if (error) {
+        console.log('error')
+        res.status(400);
+        return res.send(error.message)
+    }
+    console.log(value);
+    res.send(`success`)
 })
 
 profileRouter.put('/', (req, res) => {
