@@ -11,6 +11,21 @@ profileRouter.post('/register', (req, res) => {
         res.status(400);
         return res.send(error.message)
     }
+    /**
+     * check if validcode is valid
+     * else return 400 error something went wrong   
+     * then insert
+     *  predefined column values
+     * CREATEDON
+     * STATUS = ACTIVE
+     * 
+     */
+
+    
+    // connection.query('SELECT * FROM users WHERE id = ?', [userId], function (error, results, fields) {
+    //     if (error) throw error;
+    //     // ...
+    //   });
     console.log(value);
     res.send(`success`)
 })
@@ -18,9 +33,18 @@ profileRouter.post('/register', (req, res) => {
 profileRouter.put('/', (req, res) => {
     res.send(`updated profile`)
 })
+// I don't think schoolId is unique
+profileRouter.get('/:schoolId', (req, res) => {
+    const {schoolId} = req.params;
 
-profileRouter.get('/', (req, res) => {
     res.send('profile new')
+        connection.query('SELECT * FROM Peoples WHERE id = ?', [schoolId], function (error, results, fields) {
+        if (error) throw error;
+        // ...
+        console.log(results)
+        console.log('fields')
+        console.log(results)
+      });
 })
 
 
