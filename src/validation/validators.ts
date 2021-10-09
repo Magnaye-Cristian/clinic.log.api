@@ -1,4 +1,5 @@
 import connection from "../connection";
+import { Login } from "../models/login.model";
 
 
 export abstract class Validators {
@@ -22,6 +23,19 @@ export abstract class Validators {
                     const isValidSchoolId = count < 1;
                     console.log(`is valid schoolid ${isValidSchoolId}`)
                     resolve(isValidSchoolId)
+                })
+        })
+    }
+
+    static ValidateLogin(login: Login) {
+        //TODO: encrypt password
+        return new Promise((resolve, reject) => {
+            connection.query('SELECT COUNT(id) as count from Peoples where school_id = ?  and university_id = ? and password = ?',
+                [login.schoolId, login.university, login.password], (err, res: any, fields) => {
+                    const { count } = res[0];
+                    const isValidLoginCredentials = count == 1;
+                    console.log(`is valid schoolid ${isValidLoginCredentials}`)
+                    resolve(isValidLoginCredentials)
                 })
         })
     }
