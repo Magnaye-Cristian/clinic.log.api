@@ -15,6 +15,7 @@ const profileRouter = Router();
 // }
 
 profileRouter.put('/', (req, res) => {
+    //check if this is actually the users profile
     res.send(`updated profile`)
 })
 
