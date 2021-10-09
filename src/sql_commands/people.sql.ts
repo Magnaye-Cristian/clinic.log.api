@@ -1,6 +1,7 @@
 import connection from "../connection";
 import { Authenticate } from "../models/authenticate.model";
 import { People } from "../models/people.models";
+import { PeopleUpdate } from "../models/people-update.model";
 
 export abstract class PeopleSQL {
     static async create(people: People) {
@@ -34,8 +35,19 @@ export abstract class PeopleSQL {
         return true;
     }
 
+    static async update(people: PeopleUpdate) {
+        /**
+         * get database row first
+         * only udpate fields that are modified
+         *  WHERE school_id = ? AND university_id = ?
+         */
+        const [row] = await (await connection).execute('SELECT * FROM Peoples')
+        console.log(row)
+
+    }
+
     static async ValidateCode(code: string) {
-        const [row] = await (await connection).execute('SELECT COUNT(id) as count from Codes where code = ?', [code])
+        const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Codes WHERE code = ?', [code])
         const isValidCode = (row as any)[0].count == 1;
         console.log(`is valid code ${isValidCode}`)
 
@@ -43,7 +55,7 @@ export abstract class PeopleSQL {
     }
 
     static async ValidateSchoolIdIfUnique(schoolId: string, university: number) {
-        const [row] = await (await connection).execute('SELECT COUNT(id) as count from Peoples where school_id = ?  and university_id = ?',
+        const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Peoples WHERE school_id = ? AND university_id = ?',
             [schoolId, university]);
         const isValidSchoolId = (row as any)[0].count < 1;
         console.log(`is valid schoolid ${isValidSchoolId}`)
