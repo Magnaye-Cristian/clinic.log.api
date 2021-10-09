@@ -1,4 +1,4 @@
-import mysql from 'mysql';
+import mysql from 'mysql2';
 import process from 'process';
 
 const connection = mysql.createConnection({

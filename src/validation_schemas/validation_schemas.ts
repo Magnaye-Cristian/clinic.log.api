@@ -11,7 +11,7 @@ export abstract class ValidationSchemas {
     // At least one special character, (?=.*?[#?!@$%^&*-])
     // Minimum eight in length .{8,} (with the anchors)
     static accountCreation = Joi.object({
-        role: Joi.valid('student','faculty','staff','admin','head admin').required(),
+        role: Joi.valid('student', 'faculty', 'staff', 'admin', 'head admin').required(),
         university: Joi.number().required(),
         password: Joi.string().regex(new RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')).message(`
         At least one upper case English letter,
@@ -20,13 +20,13 @@ export abstract class ValidationSchemas {
         At least one special character,
         Minimum eight in length
         `),
-        first_name: Joi.string().max(30), //added restriction, I don't think names will exceed this length
-        last_name: Joi.string().max(30),
-        middle_name: Joi.string().max(30),
+        first_name: Joi.string().required().max(30), //added restriction, I don't think names will exceed this length
+        last_name: Joi.string().required().max(30),
+        middle_name: Joi.string().required().max(30),
         department: Joi.number(),
         program: Joi.number(),
-        schoolId: Joi.number(),
-        validCode: Joi.string()
+        schoolId: Joi.string(), // 123123,123,asd234 different formats so this cannot be a number
+        code: Joi.string()
     });
 }
 
