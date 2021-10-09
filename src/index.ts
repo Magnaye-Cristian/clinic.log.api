@@ -6,7 +6,8 @@ import { Authenticate } from './models/authenticate.model';
 import { PeopleSQL } from './sql_commands/people.sql';
 import process from 'process';
 import jwt from 'jsonwebtoken';
-import auth from './middlewares/auth'
+import auth from './middlewares/auth';
+import admin from './middlewares/admin';
 import { ValidationSchemas } from './validation_schemas/validation_schemas';
 import { People } from './models/people.models';
 import recordsRouter from './routers/records';

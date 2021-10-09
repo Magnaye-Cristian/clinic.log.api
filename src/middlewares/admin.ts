@@ -3,3 +3,5 @@ const admin = (req: any, res: any, next: any) => {
         return res.status(403).send('Access Denied');
     next();
 }
+
+export default admin;
