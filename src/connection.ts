@@ -1,4 +1,4 @@
-import mysql from 'mysql2';
+import mysql from 'mysql2/promise';
 import process from 'process';
 
 const connection = mysql.createConnection({
@@ -9,18 +9,18 @@ const connection = mysql.createConnection({
     password: process.env.MEDLOG_DB_PASSWORD
 })
 
-connection.connect((err) => {
-    console.log(process.env.MEDLOG_DB_HOST)
-    console.log(process.env.MEDLOG_DB_PORT)
-    console.log(process.env.MEDLOG_DB_NAME)
-    console.log(process.env.MEDLOG_DB_USER)
-    console.log(process.env.MEDLOG_DB_PASSWORD)
-    if (err) {
-        console.error('error connecting: ' + err.stack);
-        return;
-    }
+// connection.((err) => {
+//     console.log(process.env.MEDLOG_DB_HOST)
+//     console.log(process.env.MEDLOG_DB_PORT)
+//     console.log(process.env.MEDLOG_DB_NAME)
+//     console.log(process.env.MEDLOG_DB_USER)
+//     console.log(process.env.MEDLOG_DB_PASSWORD)
+//     if (err) {
+//         console.error('error connecting: ' + err.stack);
+//         return;
+//     }
 
-    console.log('connected as id ' + connection.threadId);
-});
+//     console.log('connected as id ' + connection.threadId);
+// });
 
 export default connection;

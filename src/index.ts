@@ -5,6 +5,7 @@ import profileRouter from './routers/profile';
 import connection from './connection';
 import { Validators } from './validation/validators';
 import { Login } from './models/login.model';
+import { PeopleSQL } from './sql_commands/people';
 const app = express();
 const router = Router();
 const prependApi = '/api/';
@@ -31,7 +32,7 @@ app.post(`${prependApi}login`, async (req, res) => {
      * return token
      */
     const login: Login = req.body;
-    const isValidLogin = await Validators.ValidateLogin(login);
+    const isValidLogin = await PeopleSQL.ValidateLogin(login);
     if (!isValidLogin) {
         res.status(400);
         return res.send('invalid credentials');
@@ -42,11 +43,9 @@ app.post(`${prependApi}login`, async (req, res) => {
 })
 
 
-app.get('/dashboard', (req, res) => {
-    const result = connection.query('select * from Universities', (err, result) => {
-        console.log(result)
-    })
-    res.send('')
+app.get('/dashboard', async (req, res) => {
+    const [row] = await (await connection).execute('select * from Universities');
+    res.send(row)
 })
 
 app.get('/tally', (req, res) => {
