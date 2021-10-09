@@ -1,5 +1,5 @@
 import connection from "../connection";
-import { Login } from "../models/login.model";
+import { Authenticate } from "../models/authenticate.model";
 
 
 export abstract class Validators {
@@ -27,7 +27,7 @@ export abstract class Validators {
     //     })
     // }
 
-    static async ValidateLogin(login: Login) {
+    static async ValidateLogin(login: Authenticate) {
         //TODO: encrypt password
         const [row, fields] = await (await connection).execute('SELECT COUNT(id) as count from Peoples where school_id = ?  and university_id = ? and password = ?',
             [login.schoolId, login.university, login.password]);

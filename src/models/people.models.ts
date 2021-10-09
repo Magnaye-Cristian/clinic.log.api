@@ -8,5 +8,6 @@ export interface People {
     department: number
     program: number,
     schoolId: string,
-    code: string
+    status: string,
+    code: string;
 }

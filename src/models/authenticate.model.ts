@@ -1,4 +1,4 @@
-export interface Login {
+export interface Authenticate {
     university: number,
     schoolId: string,
     password: string

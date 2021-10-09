@@ -3,7 +3,7 @@ import connection from "../connection";
 import { ValidationSchemas } from "../validation_schemas/validation_schemas";
 import { People } from "../models/people.models";
 import { Validators } from "../validation/validators";
-import { PeopleSQL } from "../sql_commands/people";
+import { PeopleSQL } from "../sql_commands/people.sql";
 
 const profileRouter = Router();
 // const errorTool = (error: any, res: any) => {
@@ -13,30 +13,6 @@ const profileRouter = Router();
 //         return res.send(error.message)
 //     }
 // }
-profileRouter.post('/register', async (req, res) => {
-    const { error, value } = ValidationSchemas.accountCreation.validate(req.body);
-    if (error) {
-        console.log('error')
-        res.status(400);
-        return res.send(error.message)
-    }
-
-    const people: People = value;
-
-    const isValidCode = await PeopleSQL.ValidateCode(people.code);
-    const isValidSchoolId = await PeopleSQL.ValidateSchoolIdIfUnique(people.schoolId, people.university);
-    if (!isValidCode || !isValidSchoolId) {
-        console.log('something went wrong, contact system admin')
-        res.status(400)
-        return res.send('something went wrong')
-    }
-
-    const result = await PeopleSQL.create(people);
-
-
-    console.log(result);
-    res.send('successful')
-})
 
 profileRouter.put('/', (req, res) => {
     res.send(`updated profile`)

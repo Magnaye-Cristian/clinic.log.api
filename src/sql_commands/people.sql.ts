@@ -1,5 +1,5 @@
 import connection from "../connection";
-import { Login } from "../models/login.model";
+import { Authenticate } from "../models/authenticate.model";
 import { People } from "../models/people.models";
 
 export abstract class PeopleSQL {
@@ -49,13 +49,48 @@ export abstract class PeopleSQL {
         console.log(`is valid schoolid ${isValidSchoolId}`)
         return isValidSchoolId;
     }
-
-    static async ValidateLogin(login: Login) {
+    /**
+     * 
+     * @param authenticate 
+     * @returns null if invalid, else return people
+     */
+    static async login(authenticate: Authenticate) {
         // TODO: encrypt password
-        const [row] = await (await connection).execute('SELECT COUNT(id) as count from Peoples where school_id = ?  and university_id = ? and password = ?',
-            [login.schoolId, login.university, login.password]);
-        const isValidLoginCredentials = (row as any)[0].count == 1;
-        console.log(`is valid login credentials ${isValidLoginCredentials}`)
-        return isValidLoginCredentials;
+        const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university_id = ? and password = ?',
+            [authenticate.schoolId, authenticate.university, authenticate.password]);
+        const rowResult = (row as any)[0];
+        console.log(`length ${rowResult.length}`)
+        if (!rowResult || rowResult.length > 1) {
+            console.log('row result falsy')
+            return null
+        }
+        console.log(rowResult);
+
+        return this.sqlPeopleToPeopleModel(rowResult);
+        // const people: People = {
+
+        // }
+        // console.log(people)
+        // const isValidLoginCredentials = (row as any)[0].count == 1;
+        // console.log(`is valid login credentials ${isValidLoginCredentials}`)
+        // return isValidLoginCredentials;
+    }
+    static sqlPeopleToPeopleModel(row: any): People {
+
+        const people: People = {
+            role: row.role,
+            university: row.university_id,
+            password: row.password,
+            department: row.department_id,
+            program: row.program_id,
+            schoolId: row.schoold_id,
+            first_name: row.first_name,
+            last_name: row.last_name,
+            middle_name: row.middle_name,
+            status: row.status,
+            code: ''
+        }
+
+        return people;
     }
 }
