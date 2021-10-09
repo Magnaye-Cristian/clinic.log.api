@@ -24,7 +24,7 @@ profileRouter.post('/register', async (req, res) => {
     if (!isValidCode || !isValidSchoolId) {
         console.log('something went wrong, contact system admin')
         res.status(400)
-        return res.send('invalid code')
+        return res.send('something went wrong')
     }
 
     connection.query(`
