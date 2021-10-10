@@ -7,7 +7,7 @@ export interface People {
     middle_name: string,
     department: number
     program: number,
-    schoolId: string,
+    school_id: string,
     status: string,
     code: string;
 }

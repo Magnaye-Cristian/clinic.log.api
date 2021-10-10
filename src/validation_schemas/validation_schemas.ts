@@ -19,14 +19,23 @@ export abstract class ValidationSchemas {
         At least one digit,
         At least one special character,
         Minimum eight in length
-        `),
+        `).required(),
         first_name: Joi.string().required().max(30), //added restriction, I don't think names will exceed this length
         last_name: Joi.string().required().max(30),
         middle_name: Joi.string().required().max(30),
-        department: Joi.number(),
-        program: Joi.number(),
-        schoolId: Joi.string(), // 123123,123,asd234 different formats so this cannot be a number
-        code: Joi.string()
+        department: Joi.number().required(),
+        program: Joi.number().required(),
+        school_id: Joi.string().required(), // 123123,123,asd234 different formats so this cannot be a number
+        code: Joi.string().required()
     });
+
+    static peopleUpdate = Joi.object({
+        first_name: Joi.string(),
+        last_name: Joi.string(),
+        middle_name: Joi.string(),
+        department_id: Joi.number(),
+        program_id: Joi.number(),
+        password: Joi.string(),
+    })
 }
 

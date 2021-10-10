@@ -47,9 +47,8 @@ app.post(`${prependApi}register`, async (req, res) => {
     const people: People = value;
 
     const isValidCode = await PeopleSQL.ValidateCode(people.code);
-    const isValidSchoolId = await PeopleSQL.ValidateSchoolIdIfUnique(people.schoolId, people.university);
+    const isValidSchoolId = await PeopleSQL.ValidateSchoolIdIfUnique(people.school_id, people.university);
     if (!isValidCode || !isValidSchoolId) {
-        console.log('something went wrong, contact system admin')
         res.status(400)
         return res.send('something went wrong')
     }

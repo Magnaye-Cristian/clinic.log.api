@@ -15,15 +15,32 @@ const profileRouter = Router();
 //     }
 // }
 
-profileRouter.put('/', (req, res) => {
-    //check if this is actually the users profile
+profileRouter.put('/', (req: any, res) => {
+    const { error } = ValidationSchemas.peopleUpdate.validate(req.body);
+    if (Object.keys(req.body).length < 1) return res.status(500).send('request is empty')
+    if (error) return res.status(400).send(error.message)
+
+    const people: People = req.people;
+    console.log(people)
+    if (!people) {
+        return res.status(500).send('something went wrong');
+    }
     const peopleUpdate: PeopleUpdate = req.body;
+    peopleUpdate.school_id = people.school_id;
+    peopleUpdate.university_id = people.university;
+
     console.log(req.body)
     PeopleSQL.update(peopleUpdate);
     res.send(`updated profile`)
 })
 
-profileRouter.get('/me', (req, res) => {
+profileRouter.get('/me', (req: any, res) => {
+    const people: People = req.people;
+    if (!people) {
+        return res.status(500).send('something went wrong');
+    }
+
+
     /**
      * get from token the school of the admin
      * pass the school here

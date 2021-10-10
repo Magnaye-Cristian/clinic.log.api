@@ -26,7 +26,7 @@ export abstract class PeopleSQL {
                 people.password,
                 people.department,
                 people.program,
-                people.schoolId,
+                people.school_id,
                 people.first_name,
                 people.last_name,
                 people.middle_name
@@ -41,14 +41,72 @@ export abstract class PeopleSQL {
          * only udpate fields that are modified
          *  WHERE school_id = ? AND university_id = ?
          */
-        const [row] = await (await connection).execute('SELECT * FROM Peoples')
-        console.log(row)
+        let {
+            first_name,
+            last_name,
+            middle_name,
+            department_id,
+            program_id,
+            password } = people;
 
+        const [row] = await (await connection).execute(`
+            SELECT
+            university_id,
+            first_name,
+            last_name,
+            middle_name,
+            department_id,
+            program_id,
+            password
+            FROM
+            Peoples
+            WHERE
+            university_id = ?
+            AND
+            school_id = ?`, [
+            people.university_id,
+            people.school_id
+        ])
+        const rowAny = row as PeopleUpdate[];
+
+        if (rowAny.length !== 1) {
+            console.log(`something is wrong with the data, the return length is ${rowAny.length}`)
+            return false
+        }
+
+        const peopleRow = rowAny[0];
+        if (!first_name) first_name = peopleRow.first_name;
+        if (!last_name) last_name = peopleRow.last_name;
+        if (!middle_name) middle_name = peopleRow.middle_name;
+        if (!department_id) department_id = peopleRow.department_id;
+        if (!program_id) program_id = peopleRow.program_id;
+        if (!password) password = password;
+
+        const result = (await connection).execute(`
+            UPDATE Peoples
+            SET
+            first_name = ?,
+            last_name = ?,
+            middle_name = ?,
+            department_id = ?,
+            program_id = ?,
+            password = ?
+            WHERE
+            university_id = ?
+            AND
+            school_id = ?
+        `, [people.first_name, people.last_name, people.middle_name, people.department_id, people.program_id, people.password, people.university_id, people.school_id])
+        // console.log(peopleRow)
+        // console.log(rowAny.length)
+        // console.log(rowAny)
+        // console.log(rowAny[0].department_id)
+        return true;
     }
 
     static async ValidateCode(code: string) {
         const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Codes WHERE code = ?', [code])
         const isValidCode = (row as any)[0].count == 1;
+
         console.log(`is valid code ${isValidCode}`)
 
         return isValidCode;
@@ -70,9 +128,10 @@ export abstract class PeopleSQL {
         // TODO: encrypt password
         const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university_id = ? and password = ?',
             [authenticate.schoolId, authenticate.university, authenticate.password]);
-        const rowResult = (row as any)[0];
-        console.log(`length ${rowResult.length}`)
-        if (!rowResult || rowResult.length > 1) {
+        const rowAny = row as any;
+        const rowResult = rowAny[0];
+        console.log(`length ${rowAny.length}`)
+        if (!rowResult || rowAny.length > 1) {
             console.log('row result falsy')
             return null
         }
@@ -95,7 +154,7 @@ export abstract class PeopleSQL {
             password: row.password,
             department: row.department_id,
             program: row.program_id,
-            schoolId: row.schoold_id,
+            school_id: row.school_id,
             first_name: row.first_name,
             last_name: row.last_name,
             middle_name: row.middle_name,
