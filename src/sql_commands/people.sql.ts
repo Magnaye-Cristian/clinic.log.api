@@ -103,6 +103,20 @@ export abstract class PeopleSQL {
         return true;
     }
 
+    static async get(school_id: string, university_id: number): Promise<People | null> {
+        const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university_id = ?',
+            [school_id, university_id]);
+        const rowAny = row as any;
+        const rowResult = rowAny[0];
+        console.log(`length ${rowAny.length}`)
+        if (!rowResult || rowAny.length > 1) {
+            console.log('row result falsy')
+            return null
+        }
+        console.log(rowResult);
+        return this.sqlPeopleToPeopleModel(rowResult);
+    }
+
     static async ValidateCode(code: string) {
         const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Codes WHERE code = ?', [code])
         const isValidCode = (row as any)[0].count == 1;
@@ -120,12 +134,11 @@ export abstract class PeopleSQL {
         return isValidSchoolId;
     }
     /**
-     * 
      * @param authenticate 
      * @returns null if invalid, else return people
      */
     static async login(authenticate: Authenticate) {
-        // TODO: encrypt password
+        // duplicate logic of get, can be refactored
         const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university_id = ? and password = ?',
             [authenticate.schoolId, authenticate.university, authenticate.password]);
         const rowAny = row as any;
@@ -138,14 +151,8 @@ export abstract class PeopleSQL {
         console.log(rowResult);
 
         return this.sqlPeopleToPeopleModel(rowResult);
-        // const people: People = {
-
-        // }
-        // console.log(people)
-        // const isValidLoginCredentials = (row as any)[0].count == 1;
-        // console.log(`is valid login credentials ${isValidLoginCredentials}`)
-        // return isValidLoginCredentials;
     }
+
     static sqlPeopleToPeopleModel(row: any): People {
 
         const people: People = {
