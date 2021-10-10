@@ -35,6 +35,25 @@ export abstract class PeopleSQL {
         return true;
     }
 
+    static async deactivate(school_id: string, university_id: number) {
+        console.log('uni: ' + university_id)
+        console.log(school_id)
+        const sql = (await connection).format(`
+        UPDATE Peoples
+        SET
+        status = "deactivated"
+        WHERE
+        school_id = ? 
+        AND
+        university_id = ?
+        `, [school_id, university_id]);
+        console.log(sql);
+        const [rows] = await (await connection).query(sql);
+        // const result = (await connection).execute()
+        // return result;
+        return rows
+    }
+
     static async update(people: PeopleUpdate) {
         /**
          * get database row first
