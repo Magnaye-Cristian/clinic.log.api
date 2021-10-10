@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { Account } from "../models/account.model";
 import { People } from "../models/people.models";
 import { PeopleSQL } from "../sql_commands/people.sql";
 import { ValidationSchemas } from "../validation_schemas/validation_schemas";
@@ -19,21 +20,41 @@ accountsRouter.post('/deactivate', async (req: any, res) => {
     res.send('success')
 })
 
-accountsRouter.get('/admins', (req, res) => {
-    res.send('admins1')
+accountsRouter.get('/admins', async (req: any, res) => {
+    const people: People = req.people;
+    const accounts = await manageAccount('admin', people.university)
+    console.log(accounts)
+    res.send(accounts);
 })
 
-accountsRouter.get('/students', (req, res) => {
-    res.send()
+accountsRouter.get('/students', async (req: any, res) => {
+    const people: People = req.people;
+
+    const accounts = await manageAccount('student', people.university)
+    console.log(accounts)
+    res.send(accounts);
 })
 
-accountsRouter.get('/faculties', (req, res) => {
+accountsRouter.get('/faculties', async (req: any, res) => {
+    const people: People = req.people;
 
+    const accounts = await manageAccount('faculty', people.university)
+    console.log(accounts)
+    res.send(accounts);
 })
 
-accountsRouter.get('/staff', (req, res) => {
+accountsRouter.get('/staff', async (req: any, res) => {
+    const people: People = req.people;
 
+    const accounts = await manageAccount('staff', people.university)
+    console.log(accounts)
+    res.send(accounts);
 })
+
+const manageAccount = async (role: string, university_id: number): Promise<Account[]> => {
+    const result: Account[] = await PeopleSQL.getAccounts(role, university_id);
+    return result;
+}
 
 
 

@@ -2,6 +2,7 @@ import connection from "../connection";
 import { Authenticate } from "../models/authenticate.model";
 import { People } from "../models/people.models";
 import { PeopleUpdate } from "../models/people-update.model";
+import { Account } from "../models/account.model";
 
 export abstract class PeopleSQL {
     static async create(people: People) {
@@ -122,17 +123,45 @@ export abstract class PeopleSQL {
         return true;
     }
 
+    static async getAccounts(role: string, university_id: number): Promise<Account[]> {
+        const [row] = await (await connection).execute(`
+            SELECT * FROM Peoples
+            WHERE
+            role = ?
+            AND
+            university_id = ?`, [role, university_id])
+        const rowAny = row as any[];
+        if (rowAny.length < 1)
+            return [];
+        return this.sqlPeopleToAccounts(rowAny);
+    }
+
+    static sqlPeopleToAccounts(row: any[]): Account[] {
+        let accounts: Account[] = [];
+        row.forEach((people: any) => {
+            const newAccount: Account = {
+                school_id: people.school_id,
+                first_name: people.first_name,
+                last_name: people.last_name,
+                middle_name: people.middle_name,
+                status: people.status
+            }
+            accounts.push(newAccount)
+        });
+        return accounts;
+    }
+
     static async get(school_id: string, university_id: number): Promise<People | null> {
         const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university_id = ?',
             [school_id, university_id]);
         const rowAny = row as any;
-        const rowResult = rowAny[0];
+        const rowResult = [0];
         console.log(`length ${rowAny.length}`)
         if (!rowResult || rowAny.length > 1) {
             console.log('row result falsy')
             return null
         }
-        console.log(rowResult);
+        console.log(rowResult)
         return this.sqlPeopleToPeopleModel(rowResult);
     }
 
