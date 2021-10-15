@@ -41,5 +41,13 @@ export abstract class ValidationSchemas {
     static deactivate = Joi.object({
         school_id: Joi.string().required()
     })
+
+    static universityName = Joi.object({
+        name1: Joi.string().required()
+    })
+
+    static programName = Joi.object({
+        program: Joi.string().required()
+    })
 }
 

@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import process from "process";
-import { People } from "../models/people.models";
 
 
 const auth = (req: any, res: any, next: any) => {
