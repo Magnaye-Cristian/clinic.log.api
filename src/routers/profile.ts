@@ -28,7 +28,7 @@ profileRouter.put('/', (req: any, res) => {
     }
     const peopleUpdate: PeopleUpdate = req.body;
     peopleUpdate.school_id = people.school_id;
-    peopleUpdate.university_id = people.university;
+    peopleUpdate.university = people.university;
 
     console.log(req.body)
     PeopleSQL.update(peopleUpdate);

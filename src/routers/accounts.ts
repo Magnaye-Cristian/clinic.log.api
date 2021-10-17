@@ -51,7 +51,7 @@ accountsRouter.get('/staff', async (req: any, res) => {
     res.send(accounts);
 })
 
-const manageAccount = async (role: string, university_id: number): Promise<Account[]> => {
+const manageAccount = async (role: string, university_id: string): Promise<Account[]> => {
     const result: Account[] = await PeopleSQL.getAccounts(role, university_id);
     return result;
 }

@@ -1,12 +1,12 @@
 export interface People {
     role: number,
-    university: number,
+    university: string,
     password: string,
     first_name: string,
     last_name: string,
     middle_name: string,
-    department: number
-    program: number,
+    department: string
+    program: string,
     school_id: string,
     status: string,
     code: string;

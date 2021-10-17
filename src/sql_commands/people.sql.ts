@@ -9,10 +9,10 @@ export abstract class PeopleSQL {
         const result = (await connection).execute(`
                 INSERT INTO Peoples
                 (role, 
-                university_id,
+                university,
                 password, 
-                department_id, 
-                program_id, 
+                department, 
+                program, 
                 school_id, 
                 first_name, 
                 last_name, 
@@ -36,8 +36,8 @@ export abstract class PeopleSQL {
         return true;
     }
 
-    static async deactivate(school_id: string, university_id: number) {
-        console.log('uni: ' + university_id)
+    static async deactivate(school_id: string, university: string) {
+        console.log('uni: ' + university)
         console.log(school_id)
         const sql = (await connection).format(`
         UPDATE Peoples
@@ -46,8 +46,8 @@ export abstract class PeopleSQL {
         WHERE
         school_id = ? 
         AND
-        university_id = ?
-        `, [school_id, university_id]);
+        university = ?
+        `, [school_id, university]);
         console.log(sql);
         const [rows] = await (await connection).query(sql);
         // const result = (await connection).execute()
@@ -71,12 +71,12 @@ export abstract class PeopleSQL {
 
         const [row] = await (await connection).execute(`
             SELECT
-            university_id,
+            university,
             first_name,
             last_name,
             middle_name,
-            department_id,
-            program_id,
+            department,
+            program,
             password
             FROM
             Peoples
@@ -84,7 +84,7 @@ export abstract class PeopleSQL {
             university_id = ?
             AND
             school_id = ?`, [
-            people.university_id,
+            people.university,
             people.school_id
         ])
         const rowAny = row as PeopleUpdate[];
@@ -108,14 +108,14 @@ export abstract class PeopleSQL {
             first_name = ?,
             last_name = ?,
             middle_name = ?,
-            department_id = ?,
-            program_id = ?,
+            department = ?,
+            program = ?,
             password = ?
             WHERE
-            university_id = ?
+            university = ?
             AND
             school_id = ?
-        `, [people.first_name, people.last_name, people.middle_name, people.department_id, people.program_id, people.password, people.university_id, people.school_id])
+        `, [people.first_name, people.last_name, people.middle_name, people.department_id, people.program_id, people.password, people.university, people.school_id])
         // console.log(peopleRow)
         // console.log(rowAny.length)
         // console.log(rowAny)
@@ -123,13 +123,13 @@ export abstract class PeopleSQL {
         return true;
     }
 
-    static async getAccounts(role: string, university_id: number): Promise<Account[]> {
+    static async getAccounts(role: string, university: string): Promise<Account[]> {
         const [row] = await (await connection).execute(`
             SELECT * FROM Peoples
             WHERE
             role = ?
             AND
-            university_id = ?`, [role, university_id])
+            university = ?`, [role, university])
         const rowAny = row as any[];
         if (rowAny.length < 1)
             return [];
@@ -151,9 +151,9 @@ export abstract class PeopleSQL {
         return accounts;
     }
 
-    static async get(school_id: string, university_id: number): Promise<People | null> {
-        const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university_id = ?',
-            [school_id, university_id]);
+    static async get(school_id: string, university: string): Promise<People | null> {
+        const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university = ?',
+            [school_id, university]);
         const rowAny = row as any;
         const rowResult = [0];
         console.log(`length ${rowAny.length}`)
@@ -174,8 +174,8 @@ export abstract class PeopleSQL {
         return isValidCode;
     }
 
-    static async ValidateSchoolIdIfUnique(schoolId: string, university: number) {
-        const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Peoples WHERE school_id = ? AND university_id = ?',
+    static async ValidateSchoolIdIfUnique(schoolId: string, university: string) {
+        const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Peoples WHERE school_id = ? AND university = ?',
             [schoolId, university]);
         const isValidSchoolId = (row as any)[0].count < 1;
         console.log(`is valid schoolid ${isValidSchoolId}`)
