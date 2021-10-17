@@ -11,11 +11,21 @@ import admin from './middlewares/admin';
 import { ValidationSchemas } from './validation_schemas/validation_schemas';
 import { People } from './models/people.models';
 import recordsRouter from './routers/records';
+import cors from 'cors';
 
 const app = express();
 const router = Router();
 const prependApi = '/api/';
+app.use(cors())
 app.use(express.json());
+const allowedOrigins = ['http://localhost:4200']
+const allowedHeaders = ['x-auth-token']
+const options: cors.CorsOptions = {
+    origin: allowedOrigins,
+    allowedHeaders: allowedHeaders,
+    exposedHeaders: allowedHeaders
+}
+app.use(cors(options));
 router.use(`${prependApi}records`, [auth, admin], recordsRouter)
 router.use(`${prependApi}logs`, [auth, admin], logsRouter);
 router.use(`${prependApi}accounts`, [auth, admin], accountsRouter);
@@ -24,6 +34,7 @@ app.use(router);
 
 app.post(`${prependApi}authenticate`, async (req, res) => {
     const login: Authenticate = req.body;
+    console.log(login)
     const people = await PeopleSQL.login(login);
 
     if (!people) {
