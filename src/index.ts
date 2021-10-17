@@ -12,6 +12,7 @@ import { ValidationSchemas } from './validation_schemas/validation_schemas';
 import { People } from './models/people.models';
 import recordsRouter from './routers/records';
 import cors from 'cors';
+import { SchoolSQL } from './sql_commands/school.sql';
 
 const app = express();
 const router = Router();
@@ -31,6 +32,28 @@ router.use(`${prependApi}logs`, [auth, admin], logsRouter);
 router.use(`${prependApi}accounts`, [auth, admin], accountsRouter);
 router.use(`${prependApi}profile`, auth, profileRouter);
 app.use(router);
+
+
+app.post(`/api/university`, (req, res) => {
+    const university = req.body;
+    //javascript destructuring
+    const { error, value } = ValidationSchemas.universityName.validate(university);
+    if (error)
+        return res.send(error.message)
+    SchoolSQL.createUniversity(university.name);
+    console.log(university);
+    res.send(`successful`)
+})
+
+app.post(`/api/program`, (req, res) => {
+    const program = req.body;
+    const { error, value } = ValidationSchemas.programName.validate(program);
+    if (error)
+        return res.send(error.message)
+    SchoolSQL.createProgram(program.name)
+    console.log(program);
+    res.send(`successful`)
+})
 
 app.post(`${prependApi}authenticate`, async (req, res) => {
     const login: Authenticate = req.body;
@@ -59,6 +82,7 @@ app.post(`${prependApi}register`, async (req, res) => {
 
     const isValidCode = await PeopleSQL.ValidateCode(people.code);
     const isValidSchoolId = await PeopleSQL.ValidateSchoolIdIfUnique(people.school_id, people.university);
+
     if (!isValidCode || !isValidSchoolId) {
         res.status(400)
         return res.send('something went wrong')
