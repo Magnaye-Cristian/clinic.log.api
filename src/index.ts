@@ -83,15 +83,20 @@ app.post(`${prependApi}register`, async (req, res) => {
     const isValidCode = await PeopleSQL.ValidateCode(people.code);
     const isValidSchoolId = await PeopleSQL.ValidateSchoolIdIfUnique(people.school_id, people.university);
 
-    if (!isValidCode || !isValidSchoolId) {
+    if (!isValidCode) {
         res.status(400)
-        return res.send('something went wrong')
+        res.send('Invalid code')
+    }
+
+    if (!isValidSchoolId) {
+        res.status(400)
+        return res.send('School Id already exists')
     }
 
     const result = await PeopleSQL.create(people);
 
     console.log(result);
-    res.send('successful')
+    res.send({})
 })
 
 app.listen(3000, () => {

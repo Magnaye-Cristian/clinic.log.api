@@ -168,7 +168,7 @@ export abstract class PeopleSQL {
     static async ValidateCode(code: string) {
         const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Codes WHERE code = ?', [code])
         const isValidCode = (row as any)[0].count == 1;
-
+        console.log((row as any)[0].count)
         console.log(`is valid code ${isValidCode}`)
 
         return isValidCode;
@@ -205,10 +205,10 @@ export abstract class PeopleSQL {
 
         const people: People = {
             role: row.role,
-            university: row.university_id,
+            university: row.university,
             password: row.password,
-            department: row.department_id,
-            program: row.program_id,
+            department: row.department,
+            program: row.program,
             school_id: row.school_id,
             first_name: row.first_name,
             last_name: row.last_name,
