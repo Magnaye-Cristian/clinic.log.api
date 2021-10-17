@@ -9,8 +9,8 @@ const auth = (req: any, res: any, next: any) => {
 
     try {
         const privateKey = process.env.CLINIC_LOG_JWT_PRIVATE_KEY as string;
-        const decoded = jwt.verify(token, privateKey);
         console.log(`start`)
+        const decoded = jwt.verify(token, privateKey);
         console.log(decoded)
         console.log(`decoded`)
         req.people = decoded;

@@ -33,8 +33,8 @@ export abstract class ValidationSchemas {
         first_name: Joi.string(),
         last_name: Joi.string(),
         middle_name: Joi.string(),
-        department_id: Joi.number(),
-        program_id: Joi.number(),
+        department: Joi.string(),
+        program: Joi.string(),
         password: Joi.string(),
     })
 

@@ -187,7 +187,7 @@ export abstract class PeopleSQL {
      */
     static async login(authenticate: Authenticate) {
         // duplicate logic of get, can be refactored
-        const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university_id = ? and password = ?',
+        const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university = ? and password = ?',
             [authenticate.schoolId, authenticate.university, authenticate.password]);
         const rowAny = row as any;
         const rowResult = rowAny[0];

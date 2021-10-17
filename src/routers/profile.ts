@@ -19,6 +19,7 @@ const profileRouter = Router();
 profileRouter.put('/', (req: any, res) => {
     const { error } = ValidationSchemas.peopleUpdate.validate(req.body);
     if (Object.keys(req.body).length < 1) return res.status(500).send('request is empty')
+    console.log('put profile')
     if (error) return res.status(400).send(error.message)
 
     const people: People = req.people;
@@ -32,7 +33,7 @@ profileRouter.put('/', (req: any, res) => {
 
     console.log(req.body)
     PeopleSQL.update(peopleUpdate);
-    res.send(`updated profile`)
+    res.send({})
 })
 
 profileRouter.get('/me', async (req: any, res) => {
