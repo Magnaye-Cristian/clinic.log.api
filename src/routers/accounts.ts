@@ -51,6 +51,15 @@ accountsRouter.get('/staff', async (req: any, res) => {
     res.send(accounts);
 })
 
+accountsRouter.post('/code', async (req: any, res) => {
+    const { error } = ValidationSchemas.code.validate(req.body);
+    if (error)
+        return res.status(400).send(error.message)
+    const { role } = req.body;
+    const result = await PeopleSQL.GenerateCode(role);
+    res.send({ code: result })
+})
+
 const manageAccount = async (role: string, university_id: string): Promise<Account[]> => {
     const result: Account[] = await PeopleSQL.getAccounts(role, university_id);
     return result;

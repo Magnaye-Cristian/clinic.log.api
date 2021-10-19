@@ -173,6 +173,34 @@ export abstract class PeopleSQL {
 
         return isValidCode;
     }
+    private static async codeGenerator(): Promise<string> {
+        /**
+         * generate random code, check in database if it exists, if it does the call codeGenerator again
+         */
+        // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+        //Can change 7 to 2 for longer results.
+        const code = (Math.random() + 1).toString(36).substring(7);
+        const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Codes WHERE code = ?', [code])
+        const isValidCode = (row as any)[0].count === 0;
+        return isValidCode ? code : await this.codeGenerator();
+    }
+    static async GenerateCode(role: string) {
+        const allowedRoles = ['student', 'faculty', 'staff', 'admin', 'head admin'];
+        const code = await this.codeGenerator();
+        if (!allowedRoles.includes(role.toLowerCase())) return;
+
+        const result = (await connection).execute(`
+                INSERT INTO Codes
+                (role, code)
+                VALUES
+                (?,?)`,
+            [
+                role,
+                code
+            ]);
+        console.log(result);
+        return code;
+    }
 
     static async ValidateSchoolIdIfUnique(schoolId: string, university: string) {
         const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Peoples WHERE school_id = ? AND university = ?',
