@@ -174,14 +174,13 @@ export abstract class PeopleSQL {
         const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university = ?',
             [school_id, university]);
         const rowAny = row as any;
-        const rowResult = [0];
         console.log(`length ${rowAny.length}`)
-        if (!rowResult || rowAny.length > 1) {
+        if (rowAny.length !== 1) {
             console.log('row result falsy')
             return null
         }
-        console.log(rowResult)
-        return this.sqlPeopleToPeopleModel(rowResult);
+        console.log(rowAny)
+        return this.sqlPeopleToPeopleModel(rowAny[0]);
     }
 
     static async ValidateCode(code: string, role: string) {

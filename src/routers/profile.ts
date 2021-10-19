@@ -37,11 +37,12 @@ profileRouter.put('/', (req: any, res) => {
 })
 
 profileRouter.get('/me', async (req: any, res) => {
+    console.log('me')
     const people: People = req.people;
     if (!people) {
         return res.status(500).send('something went wrong');
     }
-
+    console.log(people)
     const result = await PeopleSQL.get(people.school_id, people.university);
     console.log(result)
     res.send(result)
