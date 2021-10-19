@@ -54,7 +54,11 @@ app.post(`/api/program`, (req, res) => {
     console.log(program);
     res.send(`successful`)
 })
-
+const tokenGenerator = (people: People) => {
+    const privateKey = process.env.CLINIC_LOG_JWT_PRIVATE_KEY as string;
+    const token = jwt.sign(people, privateKey);
+    return { header: 'x-auth-token', token: token }
+}
 app.post(`${prependApi}authenticate`, async (req, res) => {
     const login: Authenticate = req.body;
     console.log(login)
@@ -64,10 +68,8 @@ app.post(`${prependApi}authenticate`, async (req, res) => {
         res.status(400);
         return res.send('invalid credentials');
     }
-
-    const privateKey = process.env.CLINIC_LOG_JWT_PRIVATE_KEY as string;
-    const token = jwt.sign(people, privateKey);
-    res.header('x-auth-token', token).send(people)
+    const tokenGen = tokenGenerator(people);
+    res.header(tokenGen.header, tokenGen.token).send(people)
 })
 
 app.post(`${prependApi}register`, async (req, res) => {
@@ -96,7 +98,8 @@ app.post(`${prependApi}register`, async (req, res) => {
     const result = await PeopleSQL.create(people);
 
     console.log(result);
-    res.send({})
+    const tokenGen = tokenGenerator(people);
+    res.header(tokenGen.header, tokenGen.token).send({})
 })
 
 app.listen(3000, () => {

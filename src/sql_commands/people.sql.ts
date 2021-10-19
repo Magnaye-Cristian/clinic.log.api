@@ -3,10 +3,11 @@ import { Authenticate } from "../models/authenticate.model";
 import { People } from "../models/people.models";
 import { PeopleUpdate } from "../models/people-update.model";
 import { Account } from "../models/account.model";
+interface IUpdateTokens { fieldCount?: number, affectedRows?: number, insertId?: number, info?: string, serverStatus?: number, warningStatus?: number, changedRows?: number }
 
 export abstract class PeopleSQL {
     static async create(people: People) {
-        const result = (await connection).execute(`
+        const [results] = await (await connection).execute(`
                 INSERT INTO Peoples
                 (role, 
                 university,
@@ -32,7 +33,25 @@ export abstract class PeopleSQL {
                 people.last_name,
                 people.middle_name
             ]);
-        console.log(result);
+        // const _res = results as IUpdateTokens;
+
+        // console.log(_res.insertId);
+
+        // const [row] = await (await connection).execute(`
+        //     SELECT * FROM Peoples WHERE Id = ?`, [_res.insertId]);
+
+        // const rowAny = row as any;
+        // const rowResult = rowAny[0];
+        // console.log(`length ${rowAny.length}`)
+        // if (!rowResult || rowAny.length > 1) {
+        //     console.log('row result falsy')
+        //     return null
+        // }
+        // console.log(rowResult);
+
+        // return this.sqlPeopleToPeopleModel(rowResult);
+
+
         return true;
     }
 
