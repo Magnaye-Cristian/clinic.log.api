@@ -99,7 +99,7 @@ app.post(`${prependApi}register`, async (req, res) => {
 
     console.log(result);
     const tokenGen = tokenGenerator(people);
-    res.header(tokenGen.header, tokenGen.token).send({})
+    res.header(tokenGen.header, tokenGen.token).send(people)
 })
 
 app.listen(3000, () => {
