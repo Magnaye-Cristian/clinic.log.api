@@ -222,6 +222,7 @@ export abstract class PeopleSQL {
     }
 
     static async ValidateSchoolIdIfUnique(schoolId: string, university_id: number) {
+        console.log(`validateSchoolIdIfUnique ${schoolId}, university_id: ${university_id}`)
         const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Peoples WHERE school_id = ? AND university_id = ?',
             [schoolId, university_id]);
         const isValidSchoolId = (row as any)[0].count < 1;
@@ -232,10 +233,11 @@ export abstract class PeopleSQL {
      * @param authenticate 
      * @returns null if invalid, else return people
      */
-    static async login(authenticate: Authenticate) {
+    static async login(authenticate: Authenticate, university_id: number) {
         // duplicate logic of get, can be refactored
+        console.log(`universityid: ${university_id}`)
         const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university_id = ? and password = ?',
-            [authenticate.schoolId, authenticate.university, authenticate.password]);
+            [authenticate.schoolId, university_id, authenticate.password]);
         const rowAny = row as any;
         const rowResult = rowAny[0];
         console.log(`length ${rowAny.length}`)

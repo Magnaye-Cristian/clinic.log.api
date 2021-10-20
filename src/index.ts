@@ -13,6 +13,7 @@ import { People } from './models/people.models';
 import recordsRouter from './routers/records';
 import cors from 'cors';
 import { SchoolSQL } from './sql_commands/school.sql';
+import { UniversitySQL } from './sql_commands/university.sql';
 
 const app = express();
 const router = Router();
@@ -62,11 +63,15 @@ const tokenGenerator = (people: People) => {
 app.post(`${prependApi}authenticate`, async (req, res) => {
     const login: Authenticate = req.body;
     console.log(login)
-    const people = await PeopleSQL.login(login);
+    // check if university is existing
+    const university = await UniversitySQL.getUniversity(login.university)
+    if (!university)
+        return res.status(400).send({ message: 'invalid credentials' })
+    const people = await PeopleSQL.login(login, university.id);
 
     if (!people) {
         res.status(400);
-        return res.send('invalid credentials');
+        return res.send({ message: 'invalid credentials' });
     }
     const tokenGen = tokenGenerator(people);
     res.header(tokenGen.header, tokenGen.token).send(people)

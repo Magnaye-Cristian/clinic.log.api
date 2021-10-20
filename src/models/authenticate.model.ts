@@ -1,5 +1,5 @@
 export interface Authenticate {
-    university: number,
+    university: string,
     schoolId: string,
     password: string
 }
