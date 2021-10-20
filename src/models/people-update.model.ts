@@ -1,6 +1,6 @@
 export interface PeopleUpdate {
     school_id: string | null
-    university: string;
+    university_id: number;
     first_name: string | null,
     last_name: string | null,
     middle_name: string | null,

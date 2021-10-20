@@ -52,5 +52,18 @@ export abstract class ValidationSchemas {
     static programName = Joi.object({
         program: Joi.string().required()
     })
+
+    static logsCreate = Joi.object({
+        //school id is not required cause a guess does not have a schoolid
+        school_id: Joi.string(),
+        type: Joi.string().valid('university', 'non-university').required(),
+        type_spec: Joi.string().valid('guardian', 'parent', 'visitor', 'guest', 'others').required(),
+        department: Joi.string().required(),
+        first_name: Joi.string().required(),
+        last_name: Joi.string().required(),
+        middle_name: Joi.string().required(),
+        purpose: Joi.string().required(),
+        complaint: Joi.string().required()
+    })
 }
 

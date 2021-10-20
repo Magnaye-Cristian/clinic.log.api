@@ -1,6 +1,6 @@
 export interface People {
     role: string,
-    university: string,
+    university_id: number,
     password: string,
     first_name: string,
     last_name: string,

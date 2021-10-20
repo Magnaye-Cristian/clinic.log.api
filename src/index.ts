@@ -83,7 +83,7 @@ app.post(`${prependApi}register`, async (req, res) => {
     const people: People = value;
 
     const isValidCode = await PeopleSQL.ValidateCode(people.code, people.role);
-    const isValidSchoolId = await PeopleSQL.ValidateSchoolIdIfUnique(people.school_id, people.university);
+    const isValidSchoolId = await PeopleSQL.ValidateSchoolIdIfUnique(people.school_id, people.university_id);
 
     if (!isValidCode) {
         res.status(400)

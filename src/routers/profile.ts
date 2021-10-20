@@ -29,7 +29,7 @@ profileRouter.put('/', (req: any, res) => {
     }
     const peopleUpdate: PeopleUpdate = req.body;
     peopleUpdate.school_id = people.school_id;
-    peopleUpdate.university = people.university;
+    peopleUpdate.university_id = people.university_id;
 
     console.log(req.body)
     PeopleSQL.update(peopleUpdate);
@@ -43,7 +43,7 @@ profileRouter.get('/me', async (req: any, res) => {
         return res.status(500).send('something went wrong');
     }
     console.log(people)
-    const result = await PeopleSQL.get(people.school_id, people.university);
+    const result = await PeopleSQL.get(people.school_id, people.university_id);
     console.log(result)
     res.send(result)
 })

@@ -10,7 +10,7 @@ export abstract class PeopleSQL {
         const [results] = await (await connection).execute(`
                 INSERT INTO Peoples
                 (role, 
-                university,
+                university_id,
                 password, 
                 department, 
                 program, 
@@ -24,7 +24,7 @@ export abstract class PeopleSQL {
                 (?,?,?,?,?,?,?,?,?, NOW(), "active")`,
             [
                 people.role,
-                people.university,
+                people.university_id,
                 people.password,
                 people.department,
                 people.program,
@@ -55,8 +55,8 @@ export abstract class PeopleSQL {
         return true;
     }
 
-    static async deactivate(school_id: string, university: string) {
-        console.log('uni: ' + university)
+    static async deactivate(school_id: string, university_id: number) {
+        console.log('uni: ' + university_id)
         console.log(school_id)
         const sql = (await connection).format(`
         UPDATE Peoples
@@ -65,8 +65,8 @@ export abstract class PeopleSQL {
         WHERE
         school_id = ? 
         AND
-        university = ?
-        `, [school_id, university]);
+        university_id = ?
+        `, [school_id, university_id]);
         console.log(sql);
         const [rows] = await (await connection).query(sql);
         // const result = (await connection).execute()
@@ -90,7 +90,7 @@ export abstract class PeopleSQL {
 
         const [row] = await (await connection).execute(`
             SELECT
-            university,
+            university_id,
             first_name,
             last_name,
             middle_name,
@@ -103,7 +103,7 @@ export abstract class PeopleSQL {
             university_id = ?
             AND
             school_id = ?`, [
-            people.university,
+            people.university_id,
             people.school_id
         ])
         const rowAny = row as PeopleUpdate[];
@@ -131,10 +131,10 @@ export abstract class PeopleSQL {
             program = ?,
             password = ?
             WHERE
-            university = ?
+            university_id = ?
             AND
             school_id = ?
-        `, [people.first_name, people.last_name, people.middle_name, people.department_id, people.program_id, people.password, people.university, people.school_id])
+        `, [people.first_name, people.last_name, people.middle_name, people.department_id, people.program_id, people.password, people.university_id, people.school_id])
         // console.log(peopleRow)
         // console.log(rowAny.length)
         // console.log(rowAny)
@@ -142,13 +142,13 @@ export abstract class PeopleSQL {
         return true;
     }
 
-    static async getAccounts(role: string, university: string): Promise<Account[]> {
+    static async getAccounts(role: string, university: number): Promise<Account[]> {
         const [row] = await (await connection).execute(`
             SELECT * FROM Peoples
             WHERE
             role = ?
             AND
-            university = ?`, [role, university])
+            university_id = ?`, [role, university])
         const rowAny = row as any[];
         if (rowAny.length < 1)
             return [];
@@ -170,9 +170,9 @@ export abstract class PeopleSQL {
         return accounts;
     }
 
-    static async get(school_id: string, university: string): Promise<People | null> {
-        const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university = ?',
-            [school_id, university]);
+    static async get(school_id: string, university_id: number): Promise<People | null> {
+        const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university_id = ?',
+            [school_id, university_id]);
         const rowAny = row as any;
         console.log(`length ${rowAny.length}`)
         if (rowAny.length !== 1) {
@@ -184,6 +184,7 @@ export abstract class PeopleSQL {
     }
 
     static async ValidateCode(code: string, role: string) {
+        console.log(`validate code: code ${code}, role: ${role}`)
         const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Codes WHERE code = ? AND role = ?', [code, role])
         const isValidCode = (row as any)[0].count == 1;
         console.log((row as any)[0].count)
@@ -220,9 +221,9 @@ export abstract class PeopleSQL {
         return code;
     }
 
-    static async ValidateSchoolIdIfUnique(schoolId: string, university: string) {
-        const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Peoples WHERE school_id = ? AND university = ?',
-            [schoolId, university]);
+    static async ValidateSchoolIdIfUnique(schoolId: string, university_id: number) {
+        const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Peoples WHERE school_id = ? AND university_id = ?',
+            [schoolId, university_id]);
         const isValidSchoolId = (row as any)[0].count < 1;
         console.log(`is valid schoolid ${isValidSchoolId}`)
         return isValidSchoolId;
@@ -233,7 +234,7 @@ export abstract class PeopleSQL {
      */
     static async login(authenticate: Authenticate) {
         // duplicate logic of get, can be refactored
-        const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university = ? and password = ?',
+        const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university_id = ? and password = ?',
             [authenticate.schoolId, authenticate.university, authenticate.password]);
         const rowAny = row as any;
         const rowResult = rowAny[0];
@@ -251,7 +252,7 @@ export abstract class PeopleSQL {
 
         const people: People = {
             role: row.role,
-            university: row.university,
+            university_id: row.university_id,
             password: row.password,
             department: row.department,
             program: row.program,
