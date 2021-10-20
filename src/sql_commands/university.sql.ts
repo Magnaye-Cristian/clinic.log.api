@@ -19,4 +19,15 @@ export abstract class UniversitySQL {
         }
         return university;
     }
+    static async getAllUniversity(): Promise<University[] | undefined> {
+        let university: University[] | undefined;
+        const [results] = await (await connection).execute(`SELECT id, name FROM Universities`);
+        const res = results as any[];
+        if (res.length > 0) {
+            console.log(res.length);
+            university = res;
+            console.log(university)
+        }
+        return university;
+    }
 }

@@ -34,7 +34,12 @@ router.use(`${prependApi}accounts`, [auth, admin], accountsRouter);
 router.use(`${prependApi}profile`, auth, profileRouter);
 app.use(router);
 
-
+app.get(`/api/universities`, async (req, res) => {
+    const universities = await UniversitySQL.getAllUniversity();
+    console.log(`universities`)
+    console.log(universities)
+    res.send(universities)
+})
 app.post(`/api/university`, (req, res) => {
     const university = req.body;
     //javascript destructuring
@@ -89,7 +94,6 @@ app.post(`${prependApi}register`, async (req, res) => {
 
     const isValidCode = await PeopleSQL.ValidateCode(people.code, people.role);
     const isValidSchoolId = await PeopleSQL.ValidateSchoolIdIfUnique(people.school_id, people.university_id);
-
     if (!isValidCode) {
         res.status(400)
         res.send('Invalid code')
