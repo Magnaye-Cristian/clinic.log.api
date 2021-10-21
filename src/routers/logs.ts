@@ -20,11 +20,15 @@ logsRouter.post('/', (req: any, res) => {
     logsCreate.university_id = admin.university_id;
     const logs = LogSQL.create(logsCreate);
 
+
     res.send(logs);
 })
 
-logsRouter.get('/', (req, res) => {
-    res.send('logsget')
+logsRouter.get('/', async (req: any, res) => {
+    const admin: People = req.people;
+    const logs: Log[] = await LogSQL.getAllByUniversity(admin.university_id);
+
+    res.send(logs)
 })
 logsRouter.get('/notimeout', (req, res) => {
     res.send('')
@@ -33,9 +37,9 @@ logsRouter.post('/timeoutLog', (req, res) => {
     res.send('')
 
 })
-logsRouter.get('/', (req, res) => {
-    res.send('')
-})
+// logsRouter.get('/:id', (req, res) => {
+//     res.send('')
+// })
 logsRouter.put('/', (req, res) => {
 
 })
