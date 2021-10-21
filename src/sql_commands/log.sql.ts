@@ -2,6 +2,18 @@ import connection from "../connection";
 import { Log } from "../models/log.model";
 
 export abstract class LogSQL {
+    static async tally(university_id: number, month: number, year: number) {
+        const sql = (await connection).format(`
+        SELECT timein, complaint, count(complaint) AS count from Logs where MONTH(timein) = ? AND YEAR(timein) = ? and university_id = ? group by day(timein) , complaint`,
+            [
+                month,
+                year,
+                university_id
+            ])
+        console.log(sql)
+        const [results] = await (await connection).query(sql);
+        return results
+    }
     static async timeout(university_id: number, id: any) {
         console.log(`university_id ${university_id}`)
         console.log(`id ${id}`)

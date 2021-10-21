@@ -46,9 +46,17 @@ logsRouter.post('/timeoutLog', async (req: any, res) => {
     // pass id of timeout log
     res.send(success)
 })
-// logsRouter.get('/:id', (req, res) => {
-//     res.send('')
-// })
+logsRouter.get('/tally', async (req: any, res) => {
+    const admin: People = req.people;
+    const { error } = ValidationSchemas.logTally.validate(req.body);
+
+    if (error)
+        return res.status(400).send({ message: error.message })
+    const date: { year: number, month: number } = req.body
+    const results = await LogSQL.tally(admin.university_id, date.month, date.year);
+
+    res.send(results)
+})
 logsRouter.put('/', (req, res) => {
 
 })

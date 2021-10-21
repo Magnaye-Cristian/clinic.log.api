@@ -69,5 +69,9 @@ export abstract class ValidationSchemas {
     static logId = Joi.object({
         id: Joi.number().required()
     })
+    static logTally = Joi.object({
+        month: Joi.number().required(),
+        year: Joi.number().required()
+    })
 }
 
