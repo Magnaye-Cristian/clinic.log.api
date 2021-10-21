@@ -30,8 +30,10 @@ logsRouter.get('/', async (req: any, res) => {
 
     res.send(logs)
 })
-logsRouter.get('/notimeout', (req, res) => {
-    res.send('')
+logsRouter.get('/notimeout', async (req: any, res) => {
+    const admin: People = req.people;
+    const logs: Log[] = await LogSQL.getAllByUniversityAndNullTimeout(admin.university_id);
+    res.send(logs)
 })
 logsRouter.post('/timeoutLog', (req, res) => {
     res.send('')
