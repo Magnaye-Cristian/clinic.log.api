@@ -5,7 +5,7 @@ import { LogSQL } from "../sql_commands/log.sql";
 import { ValidationSchemas } from "../validation_schemas/validation_schemas";
 
 const logsRouter = Router();
-
+const success = { message: 'succcess' };
 logsRouter.post('/', (req: any, res) => {
     let logsCreate: Log = req.body;
     const { error } = ValidationSchemas.logsCreate.validate(logsCreate);
@@ -35,9 +35,16 @@ logsRouter.get('/notimeout', async (req: any, res) => {
     const logs: Log[] = await LogSQL.getAllByUniversityAndNullTimeout(admin.university_id);
     res.send(logs)
 })
-logsRouter.post('/timeoutLog', (req, res) => {
-    res.send('')
+logsRouter.post('/timeoutLog', async (req: any, res) => {
+    const { error } = ValidationSchemas.logId.validate(req.body)
+    const admin: People = req.people;
+    if (error)
+        return res.status(500).send({ message: error.message })
+    const id = req.body.id;
 
+    const logs = await LogSQL.timeout(admin.university_id, id)
+    // pass id of timeout log
+    res.send(success)
 })
 // logsRouter.get('/:id', (req, res) => {
 //     res.send('')
