@@ -78,11 +78,11 @@ export abstract class ValidationSchemas {
         id: Joi.number().required(),
         type: Joi.string().valid('university', 'non-university'),
         type_spec: Joi.string().valid('guardian', 'parent', 'visitor', 'guest', 'others'),
-        department: Joi.string(),
-        first_name: Joi.string(),
-        last_name: Joi.string(),
-        middle_name: Joi.string(),
-        address: Joi.string(),
+        department: Joi.string().empty(''),
+        first_name: Joi.string().empty(''),
+        last_name: Joi.string().empty(''),
+        middle_name: Joi.string().empty(''),
+        address: Joi.string().empty(''),
         purpose: Joi.string().valid('bp monitoring', 'check-up', 'consultation', 'emergency case', 'first aid', 'medical', 'medicine', 'others'),
         complaint: Joi.string().valid('abdominal pain', 'allergy', 'body malaise', 'chest pain', 'cold', 'dysmenorrhea', 'headache', 'nausea', 'skin rash', 'sprain', 'vomiting', 'wound', 'others')
     })

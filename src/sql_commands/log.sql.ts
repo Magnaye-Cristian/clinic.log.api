@@ -28,18 +28,18 @@ export abstract class LogSQL {
         if (!complaint) complaint = logSelect.complaint;
         if (!address) address = logSelect.address;
 
-        const [results] = await (await connection).execute(`
+        const sql = await (await connection).format(`
         UPDATE Logs
         SET
         type = ?,
         type_spec = ?,
-        id = ?,
         first_name = ?,
         last_name = ?,
         middle_name = ?,
         address = ?,
         purpose = ?,
         complaint = ?
+        WHERE id = ?
         `, [
             type,
             type_spec,
@@ -48,8 +48,11 @@ export abstract class LogSQL {
             middle_name,
             address,
             purpose,
-            complaint
+            complaint,
+            id
         ])
+        console.log(sql)
+        const result = await (await connection).query(sql);
         return true;
     }
     static async tally(university_id: number, month: number, year: number) {
