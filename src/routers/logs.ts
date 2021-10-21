@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { Log } from "../models/log.model";
+import { LogUpdate } from "../models/logUpdate.model";
 import { People } from "../models/people.models";
 import { LogSQL } from "../sql_commands/log.sql";
 import { ValidationSchemas } from "../validation_schemas/validation_schemas";
@@ -57,8 +58,15 @@ logsRouter.get('/tally', async (req: any, res) => {
 
     res.send(results)
 })
-logsRouter.put('/', (req, res) => {
+logsRouter.put('/', async (req: any, res) => {
+    const admin: People = req.people;
+    const { error } = ValidationSchemas.logUpdate.validate(req.body);
 
+    if (error)
+        return res.status(400).send({ message: error.message })
+    const log: LogUpdate = req.body;
+    const results = await LogSQL.update(log, admin.university_id)
+    res.send(success)
 })
 
 export default logsRouter;

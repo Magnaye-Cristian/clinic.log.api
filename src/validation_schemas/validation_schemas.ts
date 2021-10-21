@@ -73,5 +73,18 @@ export abstract class ValidationSchemas {
         month: Joi.number().required(),
         year: Joi.number().required()
     })
+
+    static logUpdate = Joi.object({
+        id: Joi.number().required(),
+        type: Joi.string().valid('university', 'non-university'),
+        type_spec: Joi.string().valid('guardian', 'parent', 'visitor', 'guest', 'others'),
+        department: Joi.string(),
+        first_name: Joi.string(),
+        last_name: Joi.string(),
+        middle_name: Joi.string(),
+        address: Joi.string(),
+        purpose: Joi.string().valid('bp monitoring', 'check-up', 'consultation', 'emergency case', 'first aid', 'medical', 'medicine', 'others'),
+        complaint: Joi.string().valid('abdominal pain', 'allergy', 'body malaise', 'chest pain', 'cold', 'dysmenorrhea', 'headache', 'nausea', 'skin rash', 'sprain', 'vomiting', 'wound', 'others')
+    })
 }
 
