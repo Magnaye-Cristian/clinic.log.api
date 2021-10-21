@@ -14,6 +14,7 @@ import recordsRouter from './routers/records';
 import cors from 'cors';
 import { SchoolSQL } from './sql_commands/school.sql';
 import { UniversitySQL } from './sql_commands/university.sql';
+import { RegisterDTO } from './models/registedto.model';
 
 const app = express();
 const router = Router();
@@ -90,25 +91,45 @@ app.post(`${prependApi}register`, async (req, res) => {
         return res.send(error.message)
     }
 
-    const people: People = value;
+    const registerDTO: RegisterDTO = value;
 
-    const isValidCode = await PeopleSQL.ValidateCode(people.code, people.role);
-    const isValidSchoolId = await PeopleSQL.ValidateSchoolIdIfUnique(people.school_id, people.university_id);
+    const isValidCode = await PeopleSQL.ValidateCode(registerDTO.code, registerDTO.role);
+    const university = await UniversitySQL.getUniversity(registerDTO.university);
+
+    if (!university) {
+        res.status(400).send({ message: 'invalid university' })
+    }
+    const isValidSchoolId = await PeopleSQL.ValidateSchoolIdIfUnique(registerDTO.school_id, university?.id as number);
     if (!isValidCode) {
         res.status(400)
         res.send('Invalid code')
+        return;
     }
 
     if (!isValidSchoolId) {
         res.status(400)
-        return res.send('School Id already exists')
+        return res.send({ message: 'School Id already exists' })
+    }
+
+    const people: People = {
+        role: registerDTO.role,
+        university_id: university?.id as number,
+        password: registerDTO.password,
+        first_name: registerDTO.first_name,
+        last_name: registerDTO.last_name,
+        middle_name: registerDTO.middle_name,
+        department: registerDTO.department,
+        program: registerDTO.program,
+        school_id: registerDTO.school_id,
+        status: registerDTO.status,
+        code: registerDTO.code
     }
 
     const result = await PeopleSQL.create(people);
 
     console.log(result);
     const tokenGen = tokenGenerator(people);
-    res.header(tokenGen.header, tokenGen.token).send(people)
+    res.header(tokenGen.header, tokenGen.token).send(registerDTO)
 })
 
 app.listen(3000, () => {
