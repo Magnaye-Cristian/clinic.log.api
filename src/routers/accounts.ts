@@ -20,14 +20,15 @@ accountsRouter.post('/deactivate', async (req: any, res) => {
     res.send('success')
 })
 
-accountsRouter.get('/admins', async (req: any, res) => {
+accountsRouter.get('/admin', async (req: any, res) => {
     const people: People = req.people;
+
     const accounts = await manageAccount('admin', people.university_id)
     console.log(accounts)
     res.send(accounts);
 })
 
-accountsRouter.get('/students', async (req: any, res) => {
+accountsRouter.get('/student', async (req: any, res) => {
     const people: People = req.people;
 
     const accounts = await manageAccount('student', people.university_id)
@@ -35,7 +36,7 @@ accountsRouter.get('/students', async (req: any, res) => {
     res.send(accounts);
 })
 
-accountsRouter.get('/faculties', async (req: any, res) => {
+accountsRouter.get('/faculty', async (req: any, res) => {
     const people: People = req.people;
 
     const accounts = await manageAccount('faculty', people.university_id)
