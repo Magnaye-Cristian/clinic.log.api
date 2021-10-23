@@ -43,6 +43,7 @@ export abstract class ValidationSchemas {
     })
 
     static code = Joi.object({
+        number_of_codes: Joi.number().required(),
         role: Joi.valid('student', 'faculty', 'staff', 'admin', 'head admin').required()
     })
     static universityName = Joi.object({
