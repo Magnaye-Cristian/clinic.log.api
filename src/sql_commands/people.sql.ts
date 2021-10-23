@@ -6,6 +6,7 @@ import { Account } from "../models/account.model";
 interface IUpdateTokens { fieldCount?: number, affectedRows?: number, insertId?: number, info?: string, serverStatus?: number, warningStatus?: number, changedRows?: number }
 
 export abstract class PeopleSQL {
+
     static async create(people: People) {
         const [results] = await (await connection).execute(`
                 INSERT INTO Peoples
@@ -54,7 +55,11 @@ export abstract class PeopleSQL {
 
         return true;
     }
-
+    static async totalNumberOfRole(role: string, university_id: number) {
+        const [row] = await (await connection).execute(`SELECT COUNT(id) as count FROM Peoples where role = ? and university_id = ?`, [role, university_id])
+        console.log(row)
+        return (row as any)[0].count
+    }
     static async deactivate(school_id: string, university_id: number) {
         console.log('uni: ' + university_id)
         console.log(school_id)
@@ -253,6 +258,7 @@ export abstract class PeopleSQL {
     static sqlPeopleToPeopleModel(row: any): People {
 
         const people: People = {
+            id: row.id,
             role: row.role,
             university_id: row.university_id,
             password: row.password,

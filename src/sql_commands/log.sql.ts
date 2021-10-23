@@ -80,6 +80,7 @@ export abstract class LogSQL {
         return true;
     }
     static async getAllByUniversityAndNullTimeout(university_id: number): Promise<Log[]> {
+        // missing schoolid, department
         const [results] = await (await connection).execute(`
         SELECT * FROM Logs WHERE university_id = ? and timeout is null
         `, [university_id])
@@ -99,7 +100,10 @@ export abstract class LogSQL {
         console.log(log)
 
         const date = new Date();
-        const [results] = await (await connection).execute(`
+        // TODO: less prio
+        // this should be 2 different queries, on is for type university and non university
+        // if type university get the information in other database
+        const sql = await (await connection).format(`
             INSERT INTO Logs
             (
                 people_id,
@@ -115,7 +119,7 @@ export abstract class LogSQL {
                 complaint
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 `,
-            [log.school_id,
+            [log.people_id,
             log.type,
             log.type_spec,
             log.first_name,
@@ -127,6 +131,7 @@ export abstract class LogSQL {
             log.purpose,
             log.complaint
             ]);
+        const [results] = await (await connection).query(sql)
         console.log(results)
         return true;
     }

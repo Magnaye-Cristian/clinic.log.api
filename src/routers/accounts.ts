@@ -61,10 +61,22 @@ accountsRouter.post('/code', async (req: any, res) => {
     res.send({ code: result })
 })
 
+accountsRouter.get('/searchAll/:school_id', async (req: any, res) => {
+    const school_id = req.params.school_id;
+    console.log(`searchAll`)
+    console.log(school_id)
+    const people: People = req.people;
+    const results = await PeopleSQL.get(school_id, people.university_id)
+    console.log(results)
+    res.send(results)
+})
+
 const manageAccount = async (role: string, university_id: number): Promise<Account[]> => {
     const result: Account[] = await PeopleSQL.getAccounts(role, university_id);
     return result;
 }
+
+
 
 
 

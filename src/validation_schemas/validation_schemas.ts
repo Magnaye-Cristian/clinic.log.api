@@ -52,17 +52,20 @@ export abstract class ValidationSchemas {
     static programName = Joi.object({
         program: Joi.string().required()
     })
-
+    static role = Joi.object({
+        role: Joi.string().required()
+    })
     static logsCreate = Joi.object({
         //school id is not required cause a guess does not have a schoolid
-        school_id: Joi.string(),
+        people_id: Joi.number(),
+        school_id: Joi.string().empty(''),
         type: Joi.string().valid('university', 'non-university').required(),
-        type_spec: Joi.string().valid('guardian', 'parent', 'visitor', 'guest', 'others').required(),
-        department: Joi.string().required(),
+        type_spec: Joi.string().valid('guardian', 'parent', 'visitor', 'guest', 'others').empty(''),
+        department: Joi.string().empty(''),
         first_name: Joi.string().required(),
         last_name: Joi.string().required(),
         middle_name: Joi.string().required(),
-        address: Joi.string().required(),
+        address: Joi.string().empty(''),
         purpose: Joi.string().valid('bp monitoring', 'check-up', 'consultation', 'emergency case', 'first aid', 'medical', 'medicine', 'others').required(),
         complaint: Joi.string().valid('abdominal pain', 'allergy', 'body malaise', 'chest pain', 'cold', 'dysmenorrhea', 'headache', 'nausea', 'skin rash', 'sprain', 'vomiting', 'wound', 'others').required()
     })

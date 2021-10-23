@@ -16,6 +16,7 @@ logsRouter.post('/', (req: any, res) => {
 
     const admin: People = req.people;
     logsCreate = logsCreate as Log;
+    console.log(logsCreate)
     if (!logsCreate.school_id)
         logsCreate.school_id = null
     logsCreate.university_id = admin.university_id;
