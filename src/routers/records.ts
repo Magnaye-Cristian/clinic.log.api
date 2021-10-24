@@ -1,10 +1,11 @@
 import { Router } from 'express'
+import { string } from 'joi';
 import connection from '../connection';
 import { People } from '../models/people.models';
 import { PeopleSQL } from '../sql_commands/people.sql';
 
 const recordsRouter = Router();
-recordsRouter.get('/dashboard', async (req: any, res) => {
+recordsRouter.get('/', async (req: any, res) => {
     // const [row] = await (await connection).execute('select * from Universities');
     // res.send(row)
     const admin: People = req.people;
@@ -25,13 +26,36 @@ recordsRouter.get('/dashboard', async (req: any, res) => {
     res.send(dashboard)
 })
 
-// recordsRouter.get('/tally', (req, res) => {
-//     res.send('tally')
-// })
+recordsRouter.get('/monthlycomplaints/:year', async (req: any, res) => {
+    const year = req.params.year;
+    console.log(`year`)
+    const complaints = ['headache', 'dysmenorrhea', 'toothache', 'sprain', 'body pain'];
+    const admin: People = req.people
+    let monthlyComplaints: any;
+    let returnObject: { name: string, series: any[] }[] = [];
+    for (const complaint of complaints) {
+        // sql group by month
+        returnObject.push({
+            name: complaint,
+            series: await PeopleSQL.totalNumberOfComplaintsInNYearGroupByMonths(complaint, admin.university_id, year) as any[]
+        })
+    }
+    console.log(`-----------`)
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    for (const r in returnObject) {
+        let { series } = returnObject[r];
+        console.log(series)
+        for (const monthName of monthNames) {
+            const found = series.find(x => x.name === monthName)
+            if (!found)
+                series.push({ name: monthName, value: 0 })
+        }
+    }
 
-// recordsRouter.get('/records', (req, res) => {
-//     res.send('records')
-// })
+    res.send(returnObject)
+})
 
 const buildNameValuePair = (name: string, value: string) => {
     return {

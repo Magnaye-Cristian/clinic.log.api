@@ -29,7 +29,7 @@ const options: cors.CorsOptions = {
     exposedHeaders: allowedHeaders
 }
 app.use(cors(options));
-router.use(`${prependApi}records`, [auth, admin], recordsRouter)
+router.use(`${prependApi}dashboard`, [auth, admin], recordsRouter)
 router.use(`${prependApi}logs`, [auth, admin], logsRouter);
 router.use(`${prependApi}accounts`, [auth, admin], accountsRouter);
 router.use(`${prependApi}profile`, auth, profileRouter);
