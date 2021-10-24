@@ -6,6 +6,12 @@ import { Account } from "../models/account.model";
 interface IUpdateTokens { fieldCount?: number, affectedRows?: number, insertId?: number, info?: string, serverStatus?: number, warningStatus?: number, changedRows?: number }
 
 export abstract class PeopleSQL {
+    static totalNumberOfRole(role: string, university_id: number) {
+        throw new Error('Method not implemented.');
+    }
+    totalNumberOfRole(role: string, university_id: number) {
+        throw new Error('Method not implemented.');
+    }
     static async create(people: People) {
         const [results] = await (await connection).execute(`
                 INSERT INTO Peoples

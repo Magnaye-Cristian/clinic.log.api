@@ -69,16 +69,41 @@ var auth_1 = __importDefault(require("./middlewares/auth"));
 var admin_1 = __importDefault(require("./middlewares/admin"));
 var validation_schemas_1 = require("./validation_schemas/validation_schemas");
 var records_1 = __importDefault(require("./routers/records"));
+var cors_1 = __importDefault(require("cors"));
 var school_sql_1 = require("./sql_commands/school.sql");
+var university_sql_1 = require("./sql_commands/university.sql");
 var app = (0, express_1.default)();
 var router = (0, express_1.Router)();
 var prependApi = '/api/';
+app.use((0, cors_1.default)());
 app.use(express_1.default.json());
+var allowedOrigins = ['http://localhost:4200'];
+var allowedHeaders = ['x-auth-token'];
+var options = {
+    origin: allowedOrigins,
+    allowedHeaders: allowedHeaders,
+    exposedHeaders: allowedHeaders
+};
+app.use((0, cors_1.default)(options));
 router.use(prependApi + "records", [auth_1.default, admin_1.default], records_1.default);
 router.use(prependApi + "logs", [auth_1.default, admin_1.default], logs_1.default);
 router.use(prependApi + "accounts", [auth_1.default, admin_1.default], accounts_1.default);
 router.use(prependApi + "profile", auth_1.default, profile_1.default);
 app.use(router);
+app.get("/api/universities", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var universities;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, university_sql_1.UniversitySQL.getAllUniversity()];
+            case 1:
+                universities = _a.sent();
+                console.log("universities");
+                console.log(universities);
+                res.send(universities);
+                return [2 /*return*/];
+        }
+    });
+}); });
 app.post("/api/university", function (req, res) {
     var university = req.body;
     //javascript destructuring
@@ -98,28 +123,38 @@ app.post("/api/program", function (req, res) {
     console.log(program);
     res.send("successful");
 });
+var tokenGenerator = function (people) {
+    var privateKey = process_1.default.env.CLINIC_LOG_JWT_PRIVATE_KEY;
+    var token = jsonwebtoken_1.default.sign(people, privateKey);
+    return { header: 'x-auth-token', token: token };
+};
 app.post(prependApi + "authenticate", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var login, people, privateKey, token;
+    var login, university, people, tokenGen;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 login = req.body;
-                return [4 /*yield*/, people_sql_1.PeopleSQL.login(login)];
+                console.log(login);
+                return [4 /*yield*/, university_sql_1.UniversitySQL.getUniversity(login.university)];
             case 1:
+                university = _a.sent();
+                if (!university)
+                    return [2 /*return*/, res.status(400).send({ message: 'invalid credentials' })];
+                return [4 /*yield*/, people_sql_1.PeopleSQL.login(login, university.id)];
+            case 2:
                 people = _a.sent();
                 if (!people) {
                     res.status(400);
-                    return [2 /*return*/, res.send('invalid credentials')];
+                    return [2 /*return*/, res.send({ message: 'invalid credentials' })];
                 }
-                privateKey = process_1.default.env.CLINIC_LOG_JWT_PRIVATE_KEY;
-                token = jsonwebtoken_1.default.sign(people, privateKey);
-                res.header('x-auth-token', token).send(people);
+                tokenGen = tokenGenerator(people);
+                res.header(tokenGen.header, tokenGen.token).send(people);
                 return [2 /*return*/];
         }
     });
 }); });
 app.post(prependApi + "register", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, error, value, people, isValidCode, isValidSchoolId, result;
+    var _a, error, value, registerDTO, isValidCode, university, isValidSchoolId, people, result, tokenGen;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -129,22 +164,47 @@ app.post(prependApi + "register", function (req, res) { return __awaiter(void 0,
                     res.status(400);
                     return [2 /*return*/, res.send(error.message)];
                 }
-                people = value;
-                return [4 /*yield*/, people_sql_1.PeopleSQL.ValidateCode(people.code)];
+                registerDTO = value;
+                return [4 /*yield*/, people_sql_1.PeopleSQL.ValidateCode(registerDTO.code, registerDTO.role)];
             case 1:
                 isValidCode = _b.sent();
-                return [4 /*yield*/, people_sql_1.PeopleSQL.ValidateSchoolIdIfUnique(people.school_id, people.university)];
+                return [4 /*yield*/, university_sql_1.UniversitySQL.getUniversity(registerDTO.university)];
             case 2:
-                isValidSchoolId = _b.sent();
-                if (!isValidCode || !isValidSchoolId) {
-                    res.status(400);
-                    return [2 /*return*/, res.send('something went wrong')];
+                university = _b.sent();
+                if (!university) {
+                    res.status(400).send({ message: 'invalid university' });
                 }
-                return [4 /*yield*/, people_sql_1.PeopleSQL.create(people)];
+                return [4 /*yield*/, people_sql_1.PeopleSQL.ValidateSchoolIdIfUnique(registerDTO.school_id, university === null || university === void 0 ? void 0 : university.id)];
             case 3:
+                isValidSchoolId = _b.sent();
+                if (!isValidCode) {
+                    res.status(400);
+                    res.send('Invalid code');
+                    return [2 /*return*/];
+                }
+                if (!isValidSchoolId) {
+                    res.status(400);
+                    return [2 /*return*/, res.send({ message: 'School Id already exists' })];
+                }
+                people = {
+                    role: registerDTO.role,
+                    university_id: university === null || university === void 0 ? void 0 : university.id,
+                    password: registerDTO.password,
+                    first_name: registerDTO.first_name,
+                    last_name: registerDTO.last_name,
+                    middle_name: registerDTO.middle_name,
+                    department: registerDTO.department,
+                    program: registerDTO.program,
+                    school_id: registerDTO.school_id,
+                    status: registerDTO.status,
+                    code: registerDTO.code
+                };
+                return [4 /*yield*/, people_sql_1.PeopleSQL.create(people)];
+            case 4:
                 result = _b.sent();
                 console.log(result);
-                res.send('successful');
+                tokenGen = tokenGenerator(people);
+                res.header(tokenGen.header, tokenGen.token).send(registerDTO);
                 return [2 /*return*/];
         }
     });

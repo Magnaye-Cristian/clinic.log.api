@@ -54,7 +54,7 @@ accountsRouter.post('/deactivate', function (req, res) { return __awaiter(void 0
                     ];
                 //TODO: check if exists before deactivating
                 console.log(user);
-                return [4 /*yield*/, people_sql_1.PeopleSQL.deactivate(accountToDeactivate.school_id, user.university)];
+                return [4 /*yield*/, people_sql_1.PeopleSQL.deactivate(accountToDeactivate.school_id, user.university_id)];
             case 1:
                 results = _a.sent();
                 console.log(results);
@@ -69,7 +69,7 @@ accountsRouter.get('/admins', function (req, res) { return __awaiter(void 0, voi
         switch (_a.label) {
             case 0:
                 people = req.people;
-                return [4 /*yield*/, manageAccount('admin', people.university)];
+                return [4 /*yield*/, manageAccount('admin', people.university_id)];
             case 1:
                 accounts = _a.sent();
                 console.log(accounts);
@@ -84,7 +84,7 @@ accountsRouter.get('/students', function (req, res) { return __awaiter(void 0, v
         switch (_a.label) {
             case 0:
                 people = req.people;
-                return [4 /*yield*/, manageAccount('student', people.university)];
+                return [4 /*yield*/, manageAccount('student', people.university_id)];
             case 1:
                 accounts = _a.sent();
                 console.log(accounts);
@@ -99,7 +99,7 @@ accountsRouter.get('/faculties', function (req, res) { return __awaiter(void 0, 
         switch (_a.label) {
             case 0:
                 people = req.people;
-                return [4 /*yield*/, manageAccount('faculty', people.university)];
+                return [4 /*yield*/, manageAccount('faculty', people.university_id)];
             case 1:
                 accounts = _a.sent();
                 console.log(accounts);
@@ -114,11 +114,28 @@ accountsRouter.get('/staff', function (req, res) { return __awaiter(void 0, void
         switch (_a.label) {
             case 0:
                 people = req.people;
-                return [4 /*yield*/, manageAccount('staff', people.university)];
+                return [4 /*yield*/, manageAccount('staff', people.university_id)];
             case 1:
                 accounts = _a.sent();
                 console.log(accounts);
                 res.send(accounts);
+                return [2 /*return*/];
+        }
+    });
+}); });
+accountsRouter.post('/code', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var error, role, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                error = validation_schemas_1.ValidationSchemas.code.validate(req.body).error;
+                if (error)
+                    return [2 /*return*/, res.status(400).send(error.message)];
+                role = req.body.role;
+                return [4 /*yield*/, people_sql_1.PeopleSQL.GenerateCode(role)];
+            case 1:
+                result = _a.sent();
+                res.send({ code: result });
                 return [2 /*return*/];
         }
     });
