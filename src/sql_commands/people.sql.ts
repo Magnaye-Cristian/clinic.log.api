@@ -6,6 +6,11 @@ import { Account } from "../models/account.model";
 interface IUpdateTokens { fieldCount?: number, affectedRows?: number, insertId?: number, info?: string, serverStatus?: number, warningStatus?: number, changedRows?: number }
 
 export abstract class PeopleSQL {
+    static async totalNumberOfPurpose(purpose: string, university_id: number) {
+        const [row] = await (await connection).execute(`SELECT COUNT(id) as count FROM Logs where purpose = ? and university_id = ?`, [purpose, university_id])
+        console.log(row)
+        return (row as any)[0].count
+    }
     static async getAllCodes(university_id: number) {
         // todo need universityid
         const [results] = await (await connection).execute(`
