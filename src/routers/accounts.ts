@@ -20,14 +20,15 @@ accountsRouter.post('/deactivate', async (req: any, res) => {
     res.send('success')
 })
 
-accountsRouter.get('/admins', async (req: any, res) => {
+accountsRouter.get('/admin', async (req: any, res) => {
     const people: People = req.people;
+
     const accounts = await manageAccount('admin', people.university_id)
     console.log(accounts)
     res.send(accounts);
 })
 
-accountsRouter.get('/students', async (req: any, res) => {
+accountsRouter.get('/student', async (req: any, res) => {
     const people: People = req.people;
 
     const accounts = await manageAccount('student', people.university_id)
@@ -35,7 +36,7 @@ accountsRouter.get('/students', async (req: any, res) => {
     res.send(accounts);
 })
 
-accountsRouter.get('/faculties', async (req: any, res) => {
+accountsRouter.get('/faculty', async (req: any, res) => {
     const people: People = req.people;
 
     const accounts = await manageAccount('faculty', people.university_id)
@@ -55,15 +56,40 @@ accountsRouter.post('/code', async (req: any, res) => {
     const { error } = ValidationSchemas.code.validate(req.body);
     if (error)
         return res.status(400).send(error.message)
-    const { role } = req.body;
-    const result = await PeopleSQL.GenerateCode(role);
-    res.send({ code: result })
+    const { role, number_of_codes } = req.body;
+    let codes: { role: string, code: string }[] = []
+    const admin: People = req.people;
+    for (let i = 0; i < number_of_codes; i++) {
+        const result = await PeopleSQL.GenerateCode(role, admin.university_id);
+        codes.push({ role: role, code: result as string })
+    }
+    res.send(codes)
+})
+
+accountsRouter.get('/codes', async (req: any, res) => {
+    // let codesR: { code: string, role: string, createdOn: Date }[] = [];
+    const admin: People = req.people;
+    const results = await PeopleSQL.getAllCodes(admin.university_id);
+    console.log(results)
+    res.send(results)
+})
+
+accountsRouter.get('/searchAll/:school_id', async (req: any, res) => {
+    const school_id = req.params.school_id;
+    console.log(`searchAll`)
+    console.log(school_id)
+    const people: People = req.people;
+    const results = await PeopleSQL.get(school_id, people.university_id)
+    console.log(results)
+    res.send(results)
 })
 
 const manageAccount = async (role: string, university_id: number): Promise<Account[]> => {
     const result: Account[] = await PeopleSQL.getAccounts(role, university_id);
     return result;
 }
+
+
 
 
 

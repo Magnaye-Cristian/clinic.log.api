@@ -12,15 +12,17 @@ recordsRouter.get('/dashboard', async (req: any, res) => {
     const roles = ['admin', 'staff', 'faculty', 'student'];
     let rolesCount: any = [];
     for (const role of roles)
-        rolesCount.push({
-            "name": role,
-            "value": await PeopleSQL.totalNumberOfRole(role, admin.university_id)
-        });
+        rolesCount.push(buildNameValuePair(role, await PeopleSQL.totalNumberOfRole(role, admin.university_id)))
+
+    const purposes = ['bp monitoring', 'check-up', 'consultation', 'emergency case', 'first aid', 'medical', 'medicine', 'others']
+    let purposesCount: any = [];
+    for (const purpose of purposes)
+        purposesCount.push(buildNameValuePair(purpose, await PeopleSQL.totalNumberOfPurpose(purpose, admin.university_id)))
 
     dashboard.roles = rolesCount;
-
-    console.log(rolesCount)
-    res.send(rolesCount)
+    dashboard.purposes = purposesCount;
+    console.log(dashboard)
+    res.send(dashboard)
 })
 
 // recordsRouter.get('/tally', (req, res) => {
@@ -31,5 +33,10 @@ recordsRouter.get('/dashboard', async (req: any, res) => {
 //     res.send('records')
 // })
 
-
+const buildNameValuePair = (name: string, value: string) => {
+    return {
+        "name": name,
+        "value": value
+    };
+}
 export default recordsRouter;

@@ -49,6 +49,7 @@ logsRouter.post('/', function (req, res) {
     //university is from admins account
     var admin = req.people;
     logsCreate = logsCreate;
+    console.log(logsCreate);
     if (!logsCreate.school_id)
         logsCreate.school_id = null;
     logsCreate.university_id = admin.university_id;

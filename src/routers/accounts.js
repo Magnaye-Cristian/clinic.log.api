@@ -63,7 +63,7 @@ accountsRouter.post('/deactivate', function (req, res) { return __awaiter(void 0
         }
     });
 }); });
-accountsRouter.get('/admins', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+accountsRouter.get('/admin', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var people, accounts;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -78,7 +78,7 @@ accountsRouter.get('/admins', function (req, res) { return __awaiter(void 0, voi
         }
     });
 }); });
-accountsRouter.get('/students', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+accountsRouter.get('/student', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var people, accounts;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -93,7 +93,7 @@ accountsRouter.get('/students', function (req, res) { return __awaiter(void 0, v
         }
     });
 }); });
-accountsRouter.get('/faculties', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+accountsRouter.get('/faculty', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var people, accounts;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -124,18 +124,63 @@ accountsRouter.get('/staff', function (req, res) { return __awaiter(void 0, void
     });
 }); });
 accountsRouter.post('/code', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var error, role, result;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var error, _a, role, number_of_codes, codes, admin, i, result;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 error = validation_schemas_1.ValidationSchemas.code.validate(req.body).error;
                 if (error)
                     return [2 /*return*/, res.status(400).send(error.message)];
-                role = req.body.role;
-                return [4 /*yield*/, people_sql_1.PeopleSQL.GenerateCode(role)];
+                _a = req.body, role = _a.role, number_of_codes = _a.number_of_codes;
+                codes = [];
+                admin = req.people;
+                i = 0;
+                _b.label = 1;
             case 1:
-                result = _a.sent();
-                res.send({ code: result });
+                if (!(i < number_of_codes)) return [3 /*break*/, 4];
+                return [4 /*yield*/, people_sql_1.PeopleSQL.GenerateCode(role, admin.university_id)];
+            case 2:
+                result = _b.sent();
+                codes.push({ role: role, code: result });
+                _b.label = 3;
+            case 3:
+                i++;
+                return [3 /*break*/, 1];
+            case 4:
+                res.send(codes);
+                return [2 /*return*/];
+        }
+    });
+}); });
+accountsRouter.get('/codes', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var admin, results;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                admin = req.people;
+                return [4 /*yield*/, people_sql_1.PeopleSQL.getAllCodes(admin.university_id)];
+            case 1:
+                results = _a.sent();
+                console.log(results);
+                res.send(results);
+                return [2 /*return*/];
+        }
+    });
+}); });
+accountsRouter.get('/searchAll/:school_id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var school_id, people, results;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                school_id = req.params.school_id;
+                console.log("searchAll");
+                console.log(school_id);
+                people = req.people;
+                return [4 /*yield*/, people_sql_1.PeopleSQL.get(school_id, people.university_id)];
+            case 1:
+                results = _a.sent();
+                console.log(results);
+                res.send(results);
                 return [2 /*return*/];
         }
     });

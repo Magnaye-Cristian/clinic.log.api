@@ -6,12 +6,19 @@ import { Account } from "../models/account.model";
 interface IUpdateTokens { fieldCount?: number, affectedRows?: number, insertId?: number, info?: string, serverStatus?: number, warningStatus?: number, changedRows?: number }
 
 export abstract class PeopleSQL {
-    static totalNumberOfRole(role: string, university_id: number) {
-        throw new Error('Method not implemented.');
+    static async totalNumberOfPurpose(purpose: string, university_id: number) {
+        const [row] = await (await connection).execute(`SELECT COUNT(id) as count FROM Logs where purpose = ? and university_id = ?`, [purpose, university_id])
+        console.log(row)
+        return (row as any)[0].count
     }
-    totalNumberOfRole(role: string, university_id: number) {
-        throw new Error('Method not implemented.');
+    static async getAllCodes(university_id: number) {
+        // todo need universityid
+        const [results] = await (await connection).execute(`
+        SELECT * FROM Codes where university_id = ?
+        `, [university_id])
+        return results as { code: string, role: string, createon: Date }[];
     }
+
     static async create(people: People) {
         const [results] = await (await connection).execute(`
                 INSERT INTO Peoples
@@ -60,7 +67,11 @@ export abstract class PeopleSQL {
 
         return true;
     }
-
+    static async totalNumberOfRole(role: string, university_id: number) {
+        const [row] = await (await connection).execute(`SELECT COUNT(id) as count FROM Peoples where role = ? and university_id = ?`, [role, university_id])
+        console.log(row)
+        return (row as any)[0].count
+    }
     static async deactivate(school_id: string, university_id: number) {
         console.log('uni: ' + university_id)
         console.log(school_id)
@@ -141,7 +152,7 @@ export abstract class PeopleSQL {
             AND
             school_id = ?
         `, [people.first_name, people.last_name, people.middle_name, people.department_id, people.program_id, people.password, people.university_id, people.school_id])
-        // console.log(peopleRow)
+        // consola.log(, peopleRow)
         // console.log(rowAny.length)
         // console.log(rowAny)
         // console.log(rowAny[0].department_id)
@@ -209,19 +220,22 @@ export abstract class PeopleSQL {
         const isValidCode = (row as any)[0].count === 0;
         return isValidCode ? code : await this.codeGenerator();
     }
-    static async GenerateCode(role: string) {
+    static async GenerateCode(role: string, university_id: number) {
         const allowedRoles = ['student', 'faculty', 'staff', 'admin', 'head admin'];
         const code = await this.codeGenerator();
+        console.log(university_id)
         if (!allowedRoles.includes(role.toLowerCase())) return;
 
         const result = (await connection).execute(`
                 INSERT INTO Codes
-                (role, code)
+                (role, code, created_on, university_id)
                 VALUES
-                (?,?)`,
+                (?, ?, ?, ?)`,
             [
                 role,
-                code
+                code,
+                new Date(),
+                university_id
             ]);
         console.log(result);
         return code;
@@ -259,6 +273,7 @@ export abstract class PeopleSQL {
     static sqlPeopleToPeopleModel(row: any): People {
 
         const people: People = {
+            id: row.id,
             role: row.role,
             university_id: row.university_id,
             password: row.password,

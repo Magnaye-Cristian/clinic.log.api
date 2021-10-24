@@ -40,6 +40,7 @@ var ValidationSchemas = /** @class */ (function () {
         school_id: joi_1.default.string().required()
     });
     ValidationSchemas.code = joi_1.default.object({
+        number_of_codes: joi_1.default.number().required(),
         role: joi_1.default.valid('student', 'faculty', 'staff', 'admin', 'head admin').required()
     });
     ValidationSchemas.universityName = joi_1.default.object({
@@ -48,16 +49,20 @@ var ValidationSchemas = /** @class */ (function () {
     ValidationSchemas.programName = joi_1.default.object({
         program: joi_1.default.string().required()
     });
+    ValidationSchemas.role = joi_1.default.object({
+        role: joi_1.default.string().required()
+    });
     ValidationSchemas.logsCreate = joi_1.default.object({
         //school id is not required cause a guess does not have a schoolid
-        school_id: joi_1.default.string(),
+        people_id: joi_1.default.number(),
+        school_id: joi_1.default.string().empty(''),
         type: joi_1.default.string().valid('university', 'non-university').required(),
-        type_spec: joi_1.default.string().valid('guardian', 'parent', 'visitor', 'guest', 'others').required(),
-        department: joi_1.default.string().required(),
+        type_spec: joi_1.default.string().valid('guardian', 'parent', 'visitor', 'guest', 'others').empty(''),
+        department: joi_1.default.string().empty(''),
         first_name: joi_1.default.string().required(),
         last_name: joi_1.default.string().required(),
         middle_name: joi_1.default.string().required(),
-        address: joi_1.default.string().required(),
+        address: joi_1.default.string().empty(''),
         purpose: joi_1.default.string().valid('bp monitoring', 'check-up', 'consultation', 'emergency case', 'first aid', 'medical', 'medicine', 'others').required(),
         complaint: joi_1.default.string().valid('abdominal pain', 'allergy', 'body malaise', 'chest pain', 'cold', 'dysmenorrhea', 'headache', 'nausea', 'skin rash', 'sprain', 'vomiting', 'wound', 'others').required()
     });

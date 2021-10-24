@@ -1,4 +1,5 @@
 export interface Log {
+    people_id: number;
     university_id: number;
     school_id: string | null;
     type: string;
