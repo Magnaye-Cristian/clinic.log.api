@@ -1,8 +1,22 @@
 import connection from "../connection";
+import { LogMedicineUpdate } from "../models/log-medicine-update.model";
 import { Log } from "../models/log.model";
 import { LogUpdate } from "../models/logUpdate.model";
 
 export abstract class LogSQL {
+    static async updateMedicine(log: LogMedicineUpdate) {
+        let [row] = await (await connection).execute(`
+        UPDATE Logs
+        SET
+        medicine = ?
+        WHERE id = ?
+        `, [
+            log.medicine,
+            log.id
+        ]);
+        console.log(row)
+        return true;
+    }
     static async update(logUpdate: LogUpdate, university_id: number) {
         let {
             type, type_spec, id, first_name, last_name, middle_name, purpose, complaint, address

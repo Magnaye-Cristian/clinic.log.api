@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { any } from "joi";
+import { LogMedicineUpdate } from "../models/log-medicine-update.model";
 import { Log } from "../models/log.model";
 import { LogUpdate } from "../models/logUpdate.model";
 import { People } from "../models/people.models";
@@ -32,6 +34,7 @@ logsRouter.get('/', async (req: any, res) => {
 
     res.send(logs)
 })
+
 logsRouter.get('/notimeout', async (req: any, res) => {
     const admin: People = req.people;
     const logs: Log[] = await LogSQL.getAllByUniversityAndNullTimeout(admin.university_id);
@@ -48,6 +51,7 @@ logsRouter.post('/timeoutLog', async (req: any, res) => {
     // pass id of timeout log
     res.send(success)
 })
+
 logsRouter.get('/tally', async (req: any, res) => {
     const admin: People = req.people;
     const { error } = ValidationSchemas.logTally.validate(req.body);
@@ -59,6 +63,7 @@ logsRouter.get('/tally', async (req: any, res) => {
 
     res.send(results)
 })
+
 logsRouter.put('/', async (req: any, res) => {
     const admin: People = req.people;
     const { error } = ValidationSchemas.logUpdate.validate(req.body);
@@ -68,6 +73,16 @@ logsRouter.put('/', async (req: any, res) => {
     const log: LogUpdate = req.body;
     const results = await LogSQL.update(log, admin.university_id)
     res.send(success)
+})
+
+logsRouter.put('/medicine', async (req: any, res) => {
+    const admin: People = req.people;
+    const { error } = ValidationSchemas.logUpdateMedicine.validate(req.body);
+    if (error)
+        return res.status(400).send({ message: error.message })
+    const log: LogMedicineUpdate = req.body;
+    const results = await LogSQL.updateMedicine(log);
+    res.send(results)
 })
 
 export default logsRouter;

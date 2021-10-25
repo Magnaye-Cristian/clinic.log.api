@@ -90,5 +90,9 @@ export abstract class ValidationSchemas {
         purpose: Joi.string().valid('bp monitoring', 'check-up', 'consultation', 'emergency case', 'first aid', 'medical', 'medicine', 'others'),
         complaint: Joi.string().valid('abdominal pain', 'allergy', 'body malaise', 'chest pain', 'cold', 'dysmenorrhea', 'headache', 'nausea', 'skin rash', 'sprain', 'vomiting', 'wound', 'others')
     })
+    static logUpdateMedicine = Joi.object({
+        id: Joi.number().required(),
+        medicine: Joi.string().required()
+    })
 }
 
