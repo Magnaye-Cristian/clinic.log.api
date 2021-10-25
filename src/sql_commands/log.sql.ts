@@ -105,7 +105,8 @@ export abstract class LogSQL {
     static async getAllByUniversityAndNullTimeout(university_id: number): Promise<Log[]> {
         // missing schoolid, department
         const [results] = await (await connection).execute(`
-        SELECT * FROM Logs WHERE university_id = ? and timeout is null
+        select l.type, Peoples.school_id, l.type_spec, l.people_id, l.purpose, l.complaint, l.first_name, l.last_name, l.middle_name, l.address, l.timein, l.timeout, l.university_id, l.department, l.medicine from Logs as l LEFT JOIN Peoples on l.people_id = Peoples.id
+         WHERE l.university_id = ? and l.timeout is null
         `, [university_id])
         console.log(results)
         const _results = results as Log[];
@@ -113,7 +114,8 @@ export abstract class LogSQL {
     }
     static async getAllByUniversity(university_id: number): Promise<Log[]> {
         const [results] = await (await connection).execute(`
-        SELECT * FROM Logs WHERE university_id = ? and timeout is not null
+        select l.type, Peoples.school_id, l.type_spec, l.people_id, l.purpose, l.complaint, l.first_name, l.last_name, l.middle_name, l.address, l.timein, l.timeout, l.university_id, l.department, l.medicine from Logs as l LEFT JOIN Peoples on l.people_id = Peoples.id
+ WHERE l.university_id = ? and l.timeout is not null
         `, [university_id])
         console.log(results)
         const _results = results as Log[];
