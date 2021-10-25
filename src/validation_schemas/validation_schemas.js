@@ -85,6 +85,10 @@ var ValidationSchemas = /** @class */ (function () {
         purpose: joi_1.default.string().valid('bp monitoring', 'check-up', 'consultation', 'emergency case', 'first aid', 'medical', 'medicine', 'others'),
         complaint: joi_1.default.string().valid('abdominal pain', 'allergy', 'body malaise', 'chest pain', 'cold', 'dysmenorrhea', 'headache', 'nausea', 'skin rash', 'sprain', 'vomiting', 'wound', 'others')
     });
+    ValidationSchemas.logUpdateMedicine = joi_1.default.object({
+        id: joi_1.default.number().required(),
+        medicine: joi_1.default.string().required()
+    });
     return ValidationSchemas;
 }());
 exports.ValidationSchemas = ValidationSchemas;

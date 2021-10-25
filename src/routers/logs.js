@@ -40,7 +40,7 @@ var express_1 = require("express");
 var log_sql_1 = require("../sql_commands/log.sql");
 var validation_schemas_1 = require("../validation_schemas/validation_schemas");
 var logsRouter = (0, express_1.Router)();
-var success = { message: 'succcess' };
+var success = { message: 'success' };
 logsRouter.post('/', function (req, res) {
     var logsCreate = req.body;
     var error = validation_schemas_1.ValidationSchemas.logsCreate.validate(logsCreate).error;
