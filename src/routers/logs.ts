@@ -6,7 +6,7 @@ import { LogSQL } from "../sql_commands/log.sql";
 import { ValidationSchemas } from "../validation_schemas/validation_schemas";
 
 const logsRouter = Router();
-const success = { message: 'succcess' };
+const success = { message: 'success' };
 logsRouter.post('/', (req: any, res) => {
     let logsCreate: Log = req.body;
     const { error } = ValidationSchemas.logsCreate.validate(logsCreate);
@@ -70,4 +70,25 @@ logsRouter.put('/', async (req: any, res) => {
     res.send(success)
 })
 
+<<<<<<< HEAD
+=======
+logsRouter.put('/medicine', async (req: any, res) => {
+    const admin: People = req.people;
+    const { error } = ValidationSchemas.logUpdateMedicine.validate(req.body);
+    if (error)
+        return res.status(400).send({ message: error.message })
+    const log: LogMedicineUpdate = req.body;
+    const results = await LogSQL.updateMedicine(log);
+    res.send(success)
+})
+
+logsRouter.delete('', async (req: any, res) => {
+    const id = req.query.id;
+    console.log(`delete`)
+    console.log(id)
+    const results = await LogSQL.delete(id);
+    res.send(success)
+})
+
+>>>>>>> e02b2d13f61c1c7efe4deeea4acf325591e9ae98
 export default logsRouter;

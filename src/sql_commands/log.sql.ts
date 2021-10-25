@@ -113,7 +113,7 @@ export abstract class LogSQL {
     }
     static async getAllByUniversity(university_id: number): Promise<Log[]> {
         const [results] = await (await connection).execute(`
-        SELECT * FROM Logs WHERE university_id = ?
+        SELECT * FROM Logs WHERE university_id = ? and timeout is not null
         `, [university_id])
         console.log(results)
         const _results = results as Log[];
