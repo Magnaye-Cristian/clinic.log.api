@@ -4,6 +4,15 @@ import { Log } from "../models/log.model";
 import { LogUpdate } from "../models/logUpdate.model";
 
 export abstract class LogSQL {
+    static async delete(id: any) {
+        let [row] = await (await connection).execute(`
+        DELETE FROM Logs WHERE id = ?
+        `, [
+            id
+        ]);
+        console.log(row)
+        return true;
+    }
     static async updateMedicine(log: LogMedicineUpdate) {
         let [row] = await (await connection).execute(`
         UPDATE Logs

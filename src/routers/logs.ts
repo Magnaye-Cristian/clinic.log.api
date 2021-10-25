@@ -82,7 +82,16 @@ logsRouter.put('/medicine', async (req: any, res) => {
         return res.status(400).send({ message: error.message })
     const log: LogMedicineUpdate = req.body;
     const results = await LogSQL.updateMedicine(log);
-    res.send(results)
+    res.send(success)
+})
+
+logsRouter.delete('/', async (req: any, res) => {
+    const { error } = ValidationSchemas.logDelete.validate(req.body);
+    if (error)
+        return res.status(400).send({ message: error.message });
+    const { id } = req.body;
+    const results = await LogSQL.delete(id);
+    res.send(success)
 })
 
 export default logsRouter;
