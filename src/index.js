@@ -85,7 +85,7 @@ var options = {
     exposedHeaders: allowedHeaders
 };
 app.use((0, cors_1.default)(options));
-router.use(prependApi + "records", [auth_1.default, admin_1.default], records_1.default);
+router.use(prependApi + "dashboard", [auth_1.default, admin_1.default], records_1.default);
 router.use(prependApi + "logs", [auth_1.default, admin_1.default], logs_1.default);
 router.use(prependApi + "accounts", [auth_1.default, admin_1.default], accounts_1.default);
 router.use(prependApi + "profile", auth_1.default, profile_1.default);

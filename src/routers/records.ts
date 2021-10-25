@@ -29,7 +29,8 @@ recordsRouter.get('/', async (req: any, res) => {
 recordsRouter.get('/monthlycomplaints/:year', async (req: any, res) => {
     const year = req.params.year;
     console.log(`year`)
-    const complaints = ['headache', 'dysmenorrhea', 'toothache', 'sprain', 'body pain'];
+    const complaints = ['Abdominal Pain', 'Allergy', 'headache', 'Body Malaise', 'Chest Pain',
+     'Cold', 'Dysmenorrhea', 'Headache', 'Nausea', 'Skin Rash', 'Sore Throat', 'Sprain', 'Vomiting', 'Wound', 'Others'];
     const admin: People = req.people
     let monthlyComplaints: any;
     let returnObject: { name: string, series: any[] }[] = [];
