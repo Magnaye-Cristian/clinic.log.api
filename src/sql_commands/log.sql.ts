@@ -128,6 +128,7 @@ export abstract class LogSQL {
         // TODO: less prio
         // this should be 2 different queries, on is for type university and non university
         // if type university get the information in other database
+        console.log(log.department)
         const sql = await (await connection).format(`
             INSERT INTO Logs
             (
@@ -143,7 +144,7 @@ export abstract class LogSQL {
                 purpose,
                 complaint,
                 department
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 `,
             [log.people_id,
             log.type,
@@ -158,6 +159,7 @@ export abstract class LogSQL {
             log.complaint,
             log.department
             ]);
+        console.log(sql)
         const [results] = await (await connection).query(sql)
         console.log(results)
         return true;

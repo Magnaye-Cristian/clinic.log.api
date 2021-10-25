@@ -81,6 +81,7 @@ logsRouter.put('/medicine', async (req: any, res) => {
     res.send(success)
 })
 
+
 logsRouter.delete('', async (req: any, res) => {
     const id = req.query.id;
     console.log(`delete`)
