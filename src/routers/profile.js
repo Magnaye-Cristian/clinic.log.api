@@ -51,6 +51,7 @@ profileRouter.put('/', function (req, res) {
     var error = validation_schemas_1.ValidationSchemas.peopleUpdate.validate(req.body).error;
     if (Object.keys(req.body).length < 1)
         return res.status(500).send('request is empty');
+    console.log('put profile');
     if (error)
         return res.status(400).send(error.message);
     var people = req.people;
@@ -60,21 +61,23 @@ profileRouter.put('/', function (req, res) {
     }
     var peopleUpdate = req.body;
     peopleUpdate.school_id = people.school_id;
-    peopleUpdate.university_id = people.university;
+    peopleUpdate.university_id = people.university_id;
     console.log(req.body);
     people_sql_1.PeopleSQL.update(peopleUpdate);
-    res.send("updated profile");
+    res.send({});
 });
 profileRouter.get('/me', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var people, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                console.log('me');
                 people = req.people;
                 if (!people) {
                     return [2 /*return*/, res.status(500).send('something went wrong')];
                 }
-                return [4 /*yield*/, people_sql_1.PeopleSQL.get(people.school_id, people.university)];
+                console.log(people);
+                return [4 /*yield*/, people_sql_1.PeopleSQL.get(people.school_id, people.university_id)];
             case 1:
                 result = _a.sent();
                 console.log(result);
