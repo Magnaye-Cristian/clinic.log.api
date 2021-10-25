@@ -11,6 +11,16 @@ export abstract class PeopleSQL {
         console.log(row)
         return (row as any)[0].count
     }
+
+
+    static async totalNumberOfComplaintsInNYearGroupByMonths(complaints: string, university_id: number, year: number) {
+        const [row] = await (await connection).execute(`SELECT monthname(timein) as name, COUNT(id) as value FROM Logs where complaint = ? and university_id = ? and YEAR(timein) = ? group by MONTH(timein)`,
+            [complaints, university_id, year])
+        console.log(row)
+        return row
+    }
+
+
     static async getAllCodes(university_id: number) {
         // todo need universityid
         const [results] = await (await connection).execute(`
