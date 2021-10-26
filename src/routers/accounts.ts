@@ -54,15 +54,17 @@ accountsRouter.get('/staff', async (req: any, res) => {
 
 accountsRouter.post('/code', async (req: any, res) => {
     const { error } = ValidationSchemas.code.validate(req.body);
+    console.log(`generating codes....`)
     if (error)
         return res.status(400).send(error.message)
     const { role, number_of_codes } = req.body;
-    let codes: { role: string, code: string }[] = []
+    let codes: { role: string, code: string, created_on: Date }[] = []
     const admin: People = req.people;
     for (let i = 0; i < number_of_codes; i++) {
-        const result = await PeopleSQL.GenerateCode(role, admin.university_id);
-        codes.push({ role: role, code: result as string })
+        const result: any = await PeopleSQL.GenerateCode(role, admin.university_id);
+        codes.push({ role: role, code: result as string, created_on: new Date() })
     }
+    console.log(codes)
     res.send(codes)
 })
 
