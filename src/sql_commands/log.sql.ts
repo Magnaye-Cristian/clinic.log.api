@@ -28,7 +28,7 @@ export abstract class LogSQL {
     }
     static async update(logUpdate: LogUpdate, university_id: number) {
         let {
-            type, type_spec, id, first_name, last_name, middle_name, purpose, complaint, address
+            type, type_spec, id, first_name, last_name, middle_name, purpose, complaint, address, medicine, people_id, department
         } = logUpdate;
         console.log(`id ${id}, university: ${university_id}`)
 
@@ -49,22 +49,29 @@ export abstract class LogSQL {
         if (!middle_name) middle_name = logSelect.middle_name;
         if (!purpose) purpose = logSelect.purpose;
         if (!complaint) complaint = logSelect.complaint;
-        if (!address) address = logSelect.address;
+        if (!medicine) medicine = logSelect.medicine;
+        if (!people_id) people_id = logSelect.people_id;
+        if (!department) department = logSelect.department;
+
 
         const sql = await (await connection).format(`
         UPDATE Logs
         SET
         type = ?,
+        department = ?,
         type_spec = ?,
         first_name = ?,
         last_name = ?,
         middle_name = ?,
         address = ?,
         purpose = ?,
-        complaint = ?
+        complaint = ?,
+        people_id = ?,
+        medicine = ?
         WHERE id = ?
         `, [
             type,
+            department,
             type_spec,
             first_name,
             last_name,
@@ -72,6 +79,8 @@ export abstract class LogSQL {
             address,
             purpose,
             complaint,
+            people_id,
+            medicine,
             id
         ])
         console.log(sql)

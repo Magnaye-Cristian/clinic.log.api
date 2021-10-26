@@ -1,4 +1,5 @@
 export interface LogUpdate {
+    department: string | null;
     type: string | null;
     type_spec: string | null;
     id: number;
@@ -8,4 +9,6 @@ export interface LogUpdate {
     address: string | null;
     purpose: string | null;
     complaint: string | null;
+    medicine: string | null;
+    people_id: string | null;
 }
