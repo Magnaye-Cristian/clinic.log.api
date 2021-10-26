@@ -4,6 +4,16 @@ import { Log } from "../models/log.model";
 import { LogUpdate } from "../models/logUpdate.model";
 
 export abstract class LogSQL {
+    static async getAllByUniversityAndMedicineIsNotNull(day: any, month: any, year: any, university_id: number) {
+        const [row] = await (await connection).execute(`
+        select l.id, l.type, Peoples.school_id, l.type_spec, l.people_id, l.purpose, l.complaint, l.first_name, l.last_name, l.middle_name, l.address, l.timein, l.timeout, l.university_id, l.department, l.medicine from Logs as l LEFT JOIN Peoples on l.people_id = Peoples.id
+         where medicine is not null and day(timeout) = ? and month(timeout) = ? and year(timeout) = ?`
+            , [
+                day, month, year
+            ])
+        console.log(row);
+        return row
+    }
     static async delete(id: any) {
         let [row] = await (await connection).execute(`
         DELETE FROM Logs WHERE id = ?

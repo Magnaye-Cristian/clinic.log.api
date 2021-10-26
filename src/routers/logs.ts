@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { any } from "joi";
 import { LogMedicineUpdate } from "../models/log-medicine-update.model";
 import { Log } from "../models/log.model";
 import { LogUpdate } from "../models/logUpdate.model";
@@ -79,6 +80,20 @@ logsRouter.put('/medicine', async (req: any, res) => {
     const log: LogMedicineUpdate = req.body;
     const results = await LogSQL.updateMedicine(log);
     res.send(success)
+})
+
+logsRouter.get('/medicine', async (req: any, res) => {
+    //return log record that has medicine, and timeout equals that date that is passed to this request
+    const admin: People = req.people;
+    const day = req.query.day;
+    const month = req.query.month;
+    const year = req.query.year;
+    console.log(day)
+    console.log(month)
+    console.log(year)
+
+    const results = await LogSQL.getAllByUniversityAndMedicineIsNotNull(day, month, year, admin.university_id)
+    res.send(results)
 })
 
 
