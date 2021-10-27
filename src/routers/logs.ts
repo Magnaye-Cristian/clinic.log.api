@@ -34,6 +34,21 @@ logsRouter.get('/', async (req: any, res) => {
 
     res.send(logs)
 })
+
+
+logsRouter.get('/withtimeout', async (req: any, res) => {
+    const admin: People = req.people;
+    const day = req.query.day;
+    const month = req.query.month;
+    const year = req.query.year;
+    console.log(day)
+    console.log(month)
+    console.log(year)
+
+    const results = await LogSQL.getAllByUniversityAndTimeoutIsNotNull(day, month, year, admin.university_id)
+    res.send(results)
+})
+
 logsRouter.get('/notimeout', async (req: any, res) => {
     const admin: People = req.people;
     const logs: Log[] = await LogSQL.getAllByUniversityAndNullTimeout(admin.university_id);
@@ -100,12 +115,12 @@ logsRouter.get('/medicine', async (req: any, res) => {
 })
 
 
-logsRouter.delete('', async (req: any, res) => {
-    const id = req.query.id;
-    console.log(`delete`)
-    console.log(id)
-    const results = await LogSQL.delete(id);
-    res.send(success)
-})
+// logsRouter.delete('', async (req: any, res) => {
+//     const id = req.query.id;
+//     console.log(`delete`)
+//     console.log(id)
+//     const results = await LogSQL.delete(id);
+//     res.send(success)
+// })
 
 export default logsRouter;

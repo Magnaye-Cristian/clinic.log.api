@@ -16,6 +16,20 @@ export abstract class LogSQL {
         console.log(row);
         return row
     }
+
+    static async getAllByUniversityAndTimeoutIsNotNull(day: any, month: any, year: any, university_id: number) {
+        const sql = await (await connection).format(`
+        select l.id, l.type, Peoples.school_id, l.type_spec, l.people_id, l.purpose, l.complaint, l.first_name, l.last_name, l.middle_name, l.address, l.timein, l.timeout, l.university_id, l.department, l.medicine from Logs as l LEFT JOIN Peoples on l.people_id = Peoples.id
+         where timeout is not null and day(timeout) = ? and month(timeout) = ? and year(timeout) = ?`
+            , [
+                day, month, year
+            ]);
+        console.log(sql)
+        const [row] = await (await connection).query(sql)
+        console.log(row);
+        return row
+    }
+
     static async delete(id: any) {
         let [row] = await (await connection).execute(`
         DELETE FROM Logs WHERE id = ?
