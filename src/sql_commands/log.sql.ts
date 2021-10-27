@@ -5,12 +5,14 @@ import { LogUpdate } from "../models/logUpdate.model";
 
 export abstract class LogSQL {
     static async getAllByUniversityAndMedicineIsNotNull(day: any, month: any, year: any, university_id: number) {
-        const [row] = await (await connection).execute(`
+        const sql = await (await connection).format(`
         select l.id, l.type, Peoples.school_id, l.type_spec, l.people_id, l.purpose, l.complaint, l.first_name, l.last_name, l.middle_name, l.address, l.timein, l.timeout, l.university_id, l.department, l.medicine from Logs as l LEFT JOIN Peoples on l.people_id = Peoples.id
          where medicine is not null and day(timeout) = ? and month(timeout) = ? and year(timeout) = ?`
             , [
                 day, month, year
-            ])
+            ]);
+        console.log(sql)
+        const [row] = await (await connection).query(sql)
         console.log(row);
         return row
     }
@@ -113,9 +115,9 @@ export abstract class LogSQL {
         console.log(`university_id ${university_id}`)
         console.log(`id ${id}`)
         // const date = new Date()
-        const nDate = new Date().toLocaleString('en-US', {
+        const nDate = new Date(new Date().toLocaleString('en-US', {
             timeZone: 'Asia/Hong_Kong'
-        });
+        }));
         console.log(nDate)
         const [results] = await (await connection).execute(`
         UPDATE Logs
@@ -148,11 +150,15 @@ export abstract class LogSQL {
     static async create(log: Log) {
         console.log(log)
 
-        const date = new Date();
+        const nDate = new Date(new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Hong_Kong'
+        }));
+        console.log(nDate)
         // TODO: less prio
         // this should be 2 different queries, on is for type university and non university
         // if type university get the information in other database
         console.log(log.department)
+
         const sql = await (await connection).format(`
             INSERT INTO Logs
             (
@@ -177,7 +183,7 @@ export abstract class LogSQL {
             log.last_name,
             log.middle_name,
             log.address,
-                date,
+                nDate,
             log.university_id,
             log.purpose,
             log.complaint,
