@@ -112,12 +112,17 @@ export abstract class LogSQL {
     static async timeout(university_id: number, id: any) {
         console.log(`university_id ${university_id}`)
         console.log(`id ${id}`)
+        // const date = new Date()
+        const nDate = new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Hong_Kong'
+        });
+        console.log(nDate)
         const [results] = await (await connection).execute(`
         UPDATE Logs
-        SET timeout = NOW()
+        SET timeout = ?
         WHERE university_id = ? 
         AND id = ?
-        `, [university_id, id])
+        `, [nDate, university_id, id])
         console.log(results)
         return true;
     }

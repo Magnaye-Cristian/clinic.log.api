@@ -45,7 +45,10 @@ logsRouter.post('/timeoutLog', async (req: any, res) => {
     if (error)
         return res.status(500).send({ message: error.message })
     const id = req.body.id;
-
+    // const date = Date.now();
+    const nDate = new Date().toLocaleString('en-US', {
+        timeZone: 'Asia/Hong_Kong'
+    });
     const logs = await LogSQL.timeout(admin.university_id, id)
     // pass id of timeout log
     res.send(success)

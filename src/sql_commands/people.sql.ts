@@ -30,6 +30,12 @@ export abstract class PeopleSQL {
     }
 
     static async create(people: People) {
+
+
+        const nDate = new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Hong_Kong'
+        });
+        console.log(nDate)
         const [results] = await (await connection).execute(`
                 INSERT INTO Peoples
                 (role, 
@@ -44,7 +50,7 @@ export abstract class PeopleSQL {
                 created_on, 
                 status)
                 VALUES
-                (?,?,?,?,?,?,?,?,?, NOW(), "active")`,
+                (?,?,?,?,?,?,?,?,?, ?, "active")`,
             [
                 people.role,
                 people.university_id,
@@ -54,7 +60,8 @@ export abstract class PeopleSQL {
                 people.school_id,
                 people.first_name,
                 people.last_name,
-                people.middle_name
+                people.middle_name,
+                nDate
             ]);
         // const _res = results as IUpdateTokens;
 
