@@ -177,6 +177,7 @@ export abstract class PeopleSQL {
     }
 
     static async getAccounts(role: string, university: number): Promise<Account[]> {
+        console.log(`---------get accounts`)
         const [row] = await (await connection).execute(`
             SELECT * FROM Peoples
             WHERE
@@ -184,6 +185,7 @@ export abstract class PeopleSQL {
             AND
             university_id = ?`, [role, university])
         const rowAny = row as any[];
+        console.log(rowAny)
         if (rowAny.length < 1)
             return [];
         return this.sqlPeopleToAccounts(rowAny);
