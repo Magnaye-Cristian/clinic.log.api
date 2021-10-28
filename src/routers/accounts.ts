@@ -5,7 +5,7 @@ import { PeopleSQL } from "../sql_commands/people.sql";
 import { ValidationSchemas } from "../validation_schemas/validation_schemas";
 
 const accountsRouter = Router();
-
+const success = { message: 'success' }
 accountsRouter.post('/deactivate', async (req: any, res) => {
     const user: People = req.people;
     const accountToDeactivate = req.body;
@@ -17,7 +17,7 @@ accountsRouter.post('/deactivate', async (req: any, res) => {
     console.log(user)
     const results = await PeopleSQL.deactivate(accountToDeactivate.school_id, user.university_id);
     console.log(results)
-    res.send('success')
+    res.send(success)
 })
 
 accountsRouter.get('/admin', async (req: any, res) => {
