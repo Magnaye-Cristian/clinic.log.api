@@ -34,7 +34,7 @@ router.use(`${prependApi}logs`, [auth, admin], logsRouter);
 router.use(`${prependApi}accounts`, [auth, admin], accountsRouter);
 router.use(`${prependApi}profile`, auth, profileRouter);
 app.use(router);
-
+const success = { message: "success" }
 app.get(`/api/universities`, async (req, res) => {
     const universities = await UniversitySQL.getAllUniversity();
     console.log(`universities`)
@@ -81,6 +81,7 @@ app.post(`${prependApi}authenticate`, async (req, res) => {
     }
     const tokenGen = tokenGenerator(people);
     res.header(tokenGen.header, tokenGen.token).send(people)
+    res.send(success)
 })
 
 app.post(`${prependApi}register`, async (req, res) => {
