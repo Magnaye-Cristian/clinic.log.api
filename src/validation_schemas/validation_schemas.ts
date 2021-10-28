@@ -12,7 +12,7 @@ export abstract class ValidationSchemas {
     // Minimum eight in length .{8,} (with the anchors)
     static accountCreation = Joi.object({
         role: Joi.valid('student', 'faculty', 'staff', 'admin', 'head admin').required(),
-        university: Joi.string().required(),
+        university: Joi.required(),
         password: Joi.string().regex(new RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')).message(`
         At least one upper case English letter,
         At least one lower case English letter,
