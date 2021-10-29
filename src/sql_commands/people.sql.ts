@@ -6,8 +6,12 @@ import { Account } from "../models/account.model";
 interface IUpdateTokens { fieldCount?: number, affectedRows?: number, insertId?: number, info?: string, serverStatus?: number, warningStatus?: number, changedRows?: number }
 
 export abstract class PeopleSQL {
-    static async totalNumberOfPurpose(purpose: string, university_id: number) {
-        const [row] = await (await connection).execute(`SELECT COUNT(id) as count FROM Logs where purpose = ? and university_id = ?`, [purpose, university_id])
+    static async totalNumberOfPurpose(purpose: string, university_id: number, month: number, year: number) {
+        const sql = await (await connection).format(`SELECT COUNT(id) as count FROM Logs where purpose = ? and university_id = ? and month(timeout) = ? and year(timeout) = ?`,
+            [purpose, university_id, month, year])
+        console.log(sql)
+        const [row] = await (await connection).execute(`SELECT COUNT(id) as count FROM Logs where purpose = ? and university_id = ? and month(timeout) = ? and year(timeout) = ?`,
+            [purpose, university_id, month, year])
         console.log(row)
         return (row as any)[0].count
     }
