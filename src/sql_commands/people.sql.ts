@@ -118,12 +118,13 @@ export abstract class PeopleSQL {
          * only udpate fields that are modified
          *  WHERE school_id = ? AND university_id = ?
          */
+        console.log(people)
         let {
             first_name,
             last_name,
             middle_name,
-            department_id,
-            program_id,
+            department: department,
+            program: program,
             password } = people;
 
         const [row] = await (await connection).execute(`
@@ -155,8 +156,8 @@ export abstract class PeopleSQL {
         if (!first_name) first_name = peopleRow.first_name;
         if (!last_name) last_name = peopleRow.last_name;
         if (!middle_name) middle_name = peopleRow.middle_name;
-        if (!department_id) department_id = peopleRow.department_id;
-        if (!program_id) program_id = peopleRow.program_id;
+        if (!department) department = peopleRow.department;
+        if (!program) program = peopleRow.program;
         if (!password) password = password;
 
         const result = (await connection).execute(`
@@ -172,11 +173,12 @@ export abstract class PeopleSQL {
             university_id = ?
             AND
             school_id = ?
-        `, [people.first_name, people.last_name, people.middle_name, people.department_id, people.program_id, people.password, people.university_id, people.school_id])
+        `, [people.first_name, people.last_name, people.middle_name, people.department, people.program, people.password, people.university_id, people.school_id])
         // consola.log(, peopleRow)
         // console.log(rowAny.length)
         // console.log(rowAny)
         // console.log(rowAny[0].department_id)
+        console.log(people.first_name, people.last_name, people.middle_name, people.department, people.program, people.password, people.university_id, people.school_id)
         return true;
     }
 

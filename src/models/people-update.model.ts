@@ -4,7 +4,7 @@ export interface PeopleUpdate {
     first_name: string | null,
     last_name: string | null,
     middle_name: string | null,
-    department_id: string | null,
-    program_id: string | null,
+    department: string | null,
+    program: string | null,
     password: string | null,
 }

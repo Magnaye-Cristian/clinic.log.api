@@ -6,7 +6,7 @@ import { Validators } from "../validation/validators";
 import { PeopleSQL } from "../sql_commands/people.sql";
 import { PeopleUpdate } from "../models/people-update.model";
 import { profile } from "console";
-
+const success = { message: 'success' }
 const profileRouter = Router();
 // const errorTool = (error: any, res: any) => {
 //     if (error) {
@@ -16,7 +16,7 @@ const profileRouter = Router();
 //     }
 // }
 
-profileRouter.put('/', (req: any, res) => {
+profileRouter.put('/', async (req: any, res) => {
     const { error } = ValidationSchemas.peopleUpdate.validate(req.body);
     if (Object.keys(req.body).length < 1) return res.status(500).send('request is empty')
     console.log('put profile')
@@ -28,12 +28,14 @@ profileRouter.put('/', (req: any, res) => {
         return res.status(500).send('something went wrong');
     }
     const peopleUpdate: PeopleUpdate = req.body;
+    console.log(`p`)
+    console.log(peopleUpdate)
     peopleUpdate.school_id = people.school_id;
     peopleUpdate.university_id = people.university_id;
 
     console.log(req.body)
-    PeopleSQL.update(peopleUpdate);
-    res.send({})
+    const result = await PeopleSQL.update(peopleUpdate);
+    res.send(success)
 })
 
 profileRouter.get('/me', async (req: any, res) => {
