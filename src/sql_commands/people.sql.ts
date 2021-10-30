@@ -194,7 +194,7 @@ export abstract class PeopleSQL {
         console.log(rowAny)
         if (rowAny.length < 1)
             return [];
-        return rowAny;
+        return this.sqlPeopleToAccounts(rowAny);
     }
 
     static sqlPeopleToAccounts(row: any[]): Account[] {
@@ -205,7 +205,8 @@ export abstract class PeopleSQL {
                 first_name: people.first_name,
                 last_name: people.last_name,
                 middle_name: people.middle_name,
-                status: people.status
+                status: people.status,
+                department: people.department,
             }
             accounts.push(newAccount)
         });

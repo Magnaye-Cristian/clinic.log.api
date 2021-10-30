@@ -3,5 +3,6 @@ export interface Account {
     first_name: string,
     last_name: string,
     middle_name: string,
-    status: string
+    status: string,
+    department: string
 }
