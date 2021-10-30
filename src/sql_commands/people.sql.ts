@@ -89,7 +89,7 @@ export abstract class PeopleSQL {
         return true;
     }
     static async totalNumberOfRole(role: string, university_id: number) {
-        const [row] = await (await connection).execute(`SELECT COUNT(id) as count FROM Peoples where role = ? and university_id = ? and status = active`, [role, university_id])
+        const [row] = await (await connection).execute(`SELECT COUNT(id) as count FROM Peoples where role = ? and university_id = ? and status = 'active'`, [role, university_id])
         console.log(row)
         return (row as any)[0].count
     }
