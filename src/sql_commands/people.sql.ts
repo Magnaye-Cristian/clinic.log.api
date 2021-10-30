@@ -28,7 +28,7 @@ export abstract class PeopleSQL {
     static async getAllCodes(university_id: number) {
         // todo need universityid
         const [results] = await (await connection).execute(`
-        SELECT * FROM Codes where university_id = ?
+        SELECT * FROM Codes where university_id = ? order by created_on desc
         `, [university_id])
         return results as { code: string, role: string, createon: Date }[];
     }
