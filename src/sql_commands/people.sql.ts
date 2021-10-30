@@ -194,7 +194,7 @@ export abstract class PeopleSQL {
         console.log(rowAny)
         if (rowAny.length < 1)
             return [];
-        return this.sqlPeopleToAccounts(rowAny);
+        return rowAny;
     }
 
     static sqlPeopleToAccounts(row: any[]): Account[] {
