@@ -6,6 +6,8 @@ import { Validators } from "../validation/validators";
 import { PeopleSQL } from "../sql_commands/people.sql";
 import { PeopleUpdate } from "../models/people-update.model";
 import { profile } from "console";
+import { UniversitySQL } from '../sql_commands/university.sql';
+
 const success = { message: 'success' }
 const profileRouter = Router();
 // const errorTool = (error: any, res: any) => {
@@ -45,9 +47,15 @@ profileRouter.get('/me', async (req: any, res) => {
         return res.status(500).send('something went wrong');
     }
     console.log(people)
+    let returnValue: any = {};
     const result = await PeopleSQL.get(people.school_id, people.university_id);
-    console.log(result)
-    res.send(result)
+    const university = await UniversitySQL.getUniversityById(people.university_id);
+    returnValue = {
+        ...result,
+        university: (university as any).name
+    }
+    console.log(returnValue)
+    res.send(returnValue)
 })
 
 
