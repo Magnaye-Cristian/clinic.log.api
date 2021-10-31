@@ -140,7 +140,7 @@ export abstract class LogSQL {
         // missing schoolid, department
         const [results] = await (await connection).execute(`
         select l.id, l.type, Peoples.school_id, l.type_spec, l.people_id, l.purpose, l.complaint, l.first_name, l.last_name, l.middle_name, l.address, l.timein, l.timeout, l.university_id, l.department, l.medicine from Logs as l LEFT JOIN Peoples on l.people_id = Peoples.id
-         WHERE l.university_id = ? and l.timeout is null
+         WHERE l.university_id = ? and l.timeout is null order by timein desc
         `, [university_id])
         console.log(results)
         const _results = results as Log[];
