@@ -1,12 +1,16 @@
 import mysql from 'mysql2/promise';
 import process from 'process';
 
-const connection = mysql.createConnection({
+const connection = mysql.createPool({
     host: process.env.MEDLOG_DB_HOST,
     port: process.env.MEDLOG_DB_PORT as unknown as number,
     database: process.env.MEDLOG_DB_NAME,
     user: process.env.MEDLOG_DB_USER,
-    password: process.env.MEDLOG_DB_PASSWORD
+    password: process.env.MEDLOG_DB_PASSWORD,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    debug: false
 })
 
 // connection.((err) => {

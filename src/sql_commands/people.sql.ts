@@ -7,9 +7,6 @@ interface IUpdateTokens { fieldCount?: number, affectedRows?: number, insertId?:
 
 export abstract class PeopleSQL {
     static async totalNumberOfPurpose(purpose: string, university_id: number, month: number, year: number) {
-        const sql = await (await connection).format(`SELECT COUNT(id) as count FROM Logs where purpose = ? and university_id = ? and month(timeout) = ? and year(timeout) = ?`,
-            [purpose, university_id, month, year])
-        console.log(sql)
         const [row] = await (await connection).execute(`SELECT COUNT(id) as count FROM Logs where purpose = ? and university_id = ? and month(timeout) = ? and year(timeout) = ?`,
             [purpose, university_id, month, year])
         console.log(row)
@@ -96,7 +93,7 @@ export abstract class PeopleSQL {
     static async deactivate(school_id: string, university_id: number) {
         console.log('uni: ' + university_id)
         console.log(school_id)
-        const sql = (await connection).format(`
+        const [rows] = await (await connection).query(`
         UPDATE Peoples
         SET
         status = "deactivated"
@@ -105,8 +102,6 @@ export abstract class PeopleSQL {
         AND
         university_id = ?
         `, [school_id, university_id]);
-        console.log(sql);
-        const [rows] = await (await connection).query(sql);
         // const result = (await connection).execute()
         // return result;
         return rows

@@ -3,29 +3,26 @@ import { LogMedicineUpdate } from "../models/log-medicine-update.model";
 import { Log } from "../models/log.model";
 import { LogUpdate } from "../models/logUpdate.model";
 
+
 export abstract class LogSQL {
     static async getAllByUniversityAndMedicineIsNotNull(day: any, month: any, year: any, university_id: number) {
-        const sql = await (await connection).format(`
+        const [row] = await (await connection).query(`
         select l.id, l.type, Peoples.school_id, l.type_spec, l.people_id, l.purpose, l.complaint, l.first_name, l.last_name, l.middle_name, l.address, l.timein, l.timeout, l.university_id, l.department, l.medicine from Logs as l LEFT JOIN Peoples on l.people_id = Peoples.id
          where medicine is not null and day(timeout) = ? and month(timeout) = ? and year(timeout) = ?`
             , [
                 day, month, year
-            ]);
-        console.log(sql)
-        const [row] = await (await connection).query(sql)
+            ])
         console.log(row);
         return row
     }
 
     static async getAllByUniversityAndTimeoutIsNotNull(day: any, month: any, year: any, university_id: number) {
-        const sql = await (await connection).format(`
+        const [row] = await (await connection).query(`
         select l.id, l.type, Peoples.school_id, l.type_spec, l.people_id, l.purpose, l.complaint, l.first_name, l.last_name, l.middle_name, l.address, l.timein, l.timeout, l.university_id, l.department, l.medicine from Logs as l LEFT JOIN Peoples on l.people_id = Peoples.id
          where timeout is not null and day(timeout) = ? and month(timeout) = ? and year(timeout) = ?`
             , [
                 day, month, year
-            ]);
-        console.log(sql)
-        const [row] = await (await connection).query(sql)
+            ])
         console.log(row);
         return row
     }
@@ -80,7 +77,7 @@ export abstract class LogSQL {
         if (!department) department = logSelect.department;
 
 
-        const sql = await (await connection).format(`
+        const result = await (await connection).query(`
         UPDATE Logs
         SET
         type = ?,
@@ -108,22 +105,18 @@ export abstract class LogSQL {
             people_id,
             medicine,
             id
-        ])
-        console.log(sql)
-        const result = await (await connection).query(sql);
+        ]);
         return true;
     }
     static async tally(university_id: number, month: number, year: number) {
         console.log(month, year)
-        const sql = (await connection).format(`
+        const [results] = await (await connection).query(`
         SELECT timein, complaint, count(complaint) AS count from Logs where MONTH(timein) = ? AND YEAR(timein) = ? and university_id = ? group by day(timein) , complaint`,
             [
                 month,
                 year,
                 university_id
-            ])
-        console.log(sql)
-        const [results] = await (await connection).query(sql);
+            ]);
         return results
     }
     static async timeout(university_id: number, id: any) {
@@ -173,24 +166,23 @@ export abstract class LogSQL {
         // this should be 2 different queries, on is for type university and non university
         // if type university get the information in other database
         console.log(log.department)
-
-        const sql = await (await connection).format(`
-            INSERT INTO Logs
-            (
-                people_id,
-                type,
-                type_spec,
-                first_name,
-                last_name,
-                middle_name,
-                address,
-                timein,
-                university_id,
-                purpose,
-                complaint,
-                department
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                `,
+        const [results] = await (await connection).query(`
+        INSERT INTO Logs
+        (
+            people_id,
+            type,
+            type_spec,
+            first_name,
+            last_name,
+            middle_name,
+            address,
+            timein,
+            university_id,
+            purpose,
+            complaint,
+            department
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `,
             [log.people_id,
             log.type,
             log.type_spec,
@@ -203,9 +195,7 @@ export abstract class LogSQL {
             log.purpose,
             log.complaint,
             log.department
-            ]);
-        console.log(sql)
-        const [results] = await (await connection).query(sql)
+            ])
         console.log(results)
         return true;
     }
