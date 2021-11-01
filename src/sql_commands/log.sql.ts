@@ -111,7 +111,7 @@ export abstract class LogSQL {
     static async tally(university_id: number, month: number, year: number) {
         console.log(month, year)
         const [results] = await (await connection).query(`
-        SELECT timein, complaint, count(complaint) AS count from Logs where MONTH(timein) = ? AND YEAR(timein) = ? and university_id = ? group by day(timein) , complaint`,
+        SELECT timein, complaint, count(complaint) AS count from Logs where timeout is not null and MONTH(timein) = ? AND YEAR(timein) = ? and university_id = ? group by day(timein) , complaint`,
             [
                 month,
                 year,
