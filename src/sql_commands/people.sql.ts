@@ -209,7 +209,7 @@ export abstract class PeopleSQL {
     }
 
     static async get(school_id: string, university_id: number): Promise<People | null> {
-        const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university_id = ?',
+        const [row] = await (await connection).execute('SELECT * from Peoples where school_id = ?  and university_id = ? and status = "active"',
             [school_id, university_id]);
         const rowAny = row as any;
         console.log(`length ${rowAny.length}`)
