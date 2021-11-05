@@ -8,7 +8,7 @@ export abstract class LogSQL {
     static async getAllByUniversityAndMedicineIsNotNull(day: any, month: any, year: any, university_id: number) {
         const [row] = await (await connection).query(`
         select l.id, l.type, Peoples.school_id, l.type_spec, l.people_id, l.purpose, l.complaint, l.first_name, l.last_name, l.middle_name, l.address, l.timein, l.timeout, l.university_id, l.department, l.medicine from Logs as l LEFT JOIN Peoples on l.people_id = Peoples.id
-         where medicine is not null and day(timeout) = ? and month(timeout) = ? and year(timeout) = ? and university_id = ?`
+         where medicine is not null and day(timeout) = ? and month(timeout) = ? and year(timeout) = ? and l.university_id = ?`
             , [
                 day, month, year, university_id
             ])
@@ -17,9 +17,10 @@ export abstract class LogSQL {
     }
 
     static async getAllByUniversityAndTimeoutIsNotNull(day: any, month: any, year: any, university_id: number) {
+        console.log(`university_id ${university_id}`)
         const [row] = await (await connection).query(`
         select l.id, l.type, Peoples.school_id, l.type_spec, l.people_id, l.purpose, l.complaint, l.first_name, l.last_name, l.middle_name, l.address, l.timein, l.timeout, l.university_id, l.department, l.medicine from Logs as l LEFT JOIN Peoples on l.people_id = Peoples.id
-         where timeout is not null and day(timeout) = ? and month(timeout) = ? and year(timeout) = ? and university_id = ?`
+         where timeout is not null and day(timeout) = ? and month(timeout) = ? and year(timeout) = ? and l.university_id = ?`
             , [
                 day, month, year, university_id
             ])
