@@ -16,6 +16,7 @@ import { SchoolSQL } from './sql_commands/school.sql';
 import { UniversitySQL } from './sql_commands/university.sql';
 import { RegisterDTO } from './models/registedto.model';
 
+//test autoupdate git
 const app = express();
 const router = Router();
 const prependApi = '/api/';
