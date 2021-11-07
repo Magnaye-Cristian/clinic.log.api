@@ -81,7 +81,7 @@ app.post(`${prependApi}authenticate`, async (req, res) => {
     }
     const tokenGen = tokenGenerator(people);
     res.header(tokenGen.header, tokenGen.token).send(people)
-    res.send(success)
+    // res.send(success)
 })
 
 app.post(`${prependApi}register`, async (req, res) => {
