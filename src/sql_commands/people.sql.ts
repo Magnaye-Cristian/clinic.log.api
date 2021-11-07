@@ -221,9 +221,9 @@ export abstract class PeopleSQL {
         return this.sqlPeopleToPeopleModel(rowAny[0]);
     }
 
-    static async ValidateCode(code: string, role: string) {
+    static async ValidateCode(code: string, role: string, university_id: number) {
         console.log(`validate code: code ${code}, role: ${role}`)
-        const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Codes WHERE code = ? AND role = ?', [code, role])
+        const [row] = await (await connection).execute('SELECT COUNT(id) AS count FROM Codes WHERE code = ? AND role = ? AND university_id = ?', [code, role, university_id])
         const isValidCode = (row as any)[0].count == 1;
         console.log((row as any)[0].count)
         console.log(`is valid code ${isValidCode}`)
