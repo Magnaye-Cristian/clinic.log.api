@@ -230,6 +230,10 @@ export abstract class PeopleSQL {
 
         return isValidCode;
     }
+    static async deleteCode(code: string) {
+        const [row] = await (await connection).execute('delete FROM Codes WHERE code = ?', [code])
+        return row;
+    }
     private static async codeGenerator(): Promise<string> {
         /**
          * generate random code, check in database if it exists, if it does the call codeGenerator again

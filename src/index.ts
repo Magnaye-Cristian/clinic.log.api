@@ -110,11 +110,12 @@ app.post(`${prependApi}register`, async (req, res) => {
         res.send('Invalid code')
         return;
     }
-
     if (!isValidSchoolId) {
         res.status(400)
         return res.send({ message: 'School Id already exists' })
     }
+
+
 
     const people: People = {
         role: registerDTO.role,
@@ -134,6 +135,10 @@ app.post(`${prependApi}register`, async (req, res) => {
 
     console.log(result);
     const tokenGen = tokenGenerator(people);
+
+    const deleteCode = await PeopleSQL.deleteCode(registerDTO.code);
+    console.log(deleteCode)
+    console.log(`deletecode`)
     res.header(tokenGen.header, tokenGen.token).send(registerDTO)
 })
 
