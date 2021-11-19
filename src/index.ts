@@ -100,7 +100,7 @@ app.post(`${prependApi}register`, async (req, res) => {
 
     console.log(university)
     if (!university) {
-        res.status(400).send({ message: 'invalid university' })
+        return res.status(400).send({ message: 'invalid university' })
     }
     if (university?.id) {
         isValidCode = await PeopleSQL.ValidateCode(registerDTO.code, registerDTO.role, university.id);
