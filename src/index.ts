@@ -97,12 +97,13 @@ app.post(`${prependApi}register`, async (req, res) => {
 
     const university = await UniversitySQL.getUniversity(registerDTO.university);
     let isValidCode = false;
-    if (university) {
-        isValidCode = await PeopleSQL.ValidateCode(registerDTO.code, registerDTO.role, university.id);
-    }
+
     console.log(university)
     if (!university) {
         res.status(400).send({ message: 'invalid university' })
+    }
+    if (university?.id) {
+        isValidCode = await PeopleSQL.ValidateCode(registerDTO.code, registerDTO.role, university.id);
     }
     const isValidSchoolId = await PeopleSQL.ValidateSchoolIdIfUnique(registerDTO.school_id, university?.id as number);
     if (!isValidCode) {
